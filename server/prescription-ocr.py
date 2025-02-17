@@ -1,96 +1,91 @@
-from flask import Flask, request, jsonify
+import os
 import pytesseract
+from fastapi import FastAPI, HTTPException, File, UploadFile, Form
+from dotenv import load_dotenv
+import google.generativeai as genai
 from PIL import Image
-from transformers import AutoModelForCausalLM, AutoTokenizer
-from flask_cors import CORS
+from io import BytesIO
 
-app = Flask(__name__)
-CORS(app)  # Allow all origins
+# Load environment variables
+load_dotenv()
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
-# Initialize Tesseract and Hugging Face Model
-pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"  # Adjust path for your system
-model_name = "Qwen/Qwen2.5-1.5B-Instruct"
+# Validate API Key
+if not GEMINI_API_KEY:
+    raise RuntimeError("❌ Google API key is missing. Set 'GEMINI_API_KEY' in environment variables.")
 
-# Load Hugging Face Model
-model = AutoModelForCausalLM.from_pretrained(
-    model_name,
-    torch_dtype="auto",
-    device_map="auto"
+# Configure Gemini API
+genai.configure(api_key=GEMINI_API_KEY)
+
+# Initialize FastAPI
+app = FastAPI()
+
+# Gemini model configuration
+generation_config = {
+    "temperature": 0.7,
+    "top_p": 0.9,
+    "max_output_tokens": 500,
+}
+
+model = genai.GenerativeModel(
+    model_name="gemini-2.0-flash-exp",
+    generation_config=generation_config,
+    system_instruction="Your role is to extract medicinal information from prescriptions, including medicine names, dosages, frequencies, and other details. Be as precise as possible."
 )
-tokenizer = AutoTokenizer.from_pretrained(model_name)
 
-def extract_text_from_image(image_path):
-    # Open the image file using PIL and extract text via Tesseract
-    img = Image.open(image_path)
-    extracted_text = pytesseract.image_to_string(img)
-    return extracted_text.strip()
+# Helper function to extract text using Tesseract OCR
+def extract_text_from_image(image_data: bytes) -> str:
+    try:
+        # Open image from bytes
+        image = Image.open(BytesIO(image_data))
+        # Use Tesseract to extract text
+        extracted_text = pytesseract.image_to_string(image)
+        return extracted_text
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error extracting text from image: {str(e)}")
 
-def query_model(medicine_name):
-    # More explicit instructions:
-    system_message = (
-        "You are Qwen, created by Alibaba Cloud. You are a helpful assistant. "
-        "Please strictly follow the user's instructions about how to structure your output."
-    )
-    #This is not working for name section. See V Aditya Teja
-    user_message = (
-        f"I have identified a medicine named '{medicine_name}'.\n\n"
-        f"1. **Alternative Medicines**: List 2 other medicines that can be used for the same purposes as {medicine_name}.\n"
-        f"2. **Side Effects**: List 2 common side effects of {medicine_name}.\n\n"
-        f"Please output in Markdown, with headings 'Alternative Medicines' and 'Side Effects'."
-    )
+# Prescription extraction prompt template
+def create_prescription_prompt(extracted_text: str) -> str:
+    return f"""
+    You are an AI assistant designed to extract and identify medicinal information from a prescription. The following prescription contains one or more medicines.
 
-    messages = [
-        {"role": "system", "content": system_message},
-        {"role": "user", "content": user_message}
-    ]
+    Please extract all the medicine names from the given text and list them. For each identified medicine, provide the following details in a structured format:
 
-    text = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
-    
-    model_inputs = tokenizer([text], return_tensors="pt").to(model.device)
-    generated_ids = model.generate(**model_inputs, max_new_tokens=512)
-    generated_ids = [output_ids[len(input_ids):] 
-                     for input_ids, output_ids in zip(model_inputs.input_ids, generated_ids)]
-    response = tokenizer.batch_decode(generated_ids, skip_special_tokens=True)[0]
-    
-    return response
+    1. **Medicine Name**: The name of the medicine.
+    2. **Purpose of the medicine**: Let the user know what the medication is commonly used for, based on web-sourced information (simple terms).
+    3. **Dosage instructions and potential drug interactions**: Provide any relevant dosage instructions or warnings about potential drug interactions, side effects, or additional notes that might be important (not just what's written in the prescription, but based on general medical guidelines).
 
-# Route to extract the medicine name from an image (OCR)
-@app.route('/extract_medicine_name', methods=['POST'])
-def extract_medicine_name_endpoint():
-    # Look for the file under 'prescription' as used by the React code
-    if 'prescription' not in request.files:
-        return jsonify({"error": "No file part in the request"}), 400
+    Here is the prescription text:
 
-    file = request.files['prescription']
-    if file.filename == '':
-        return jsonify({"error": "No file selected"}), 400
+    "{extracted_text}"
 
-    # Save the file temporarily
-    file_path = 'temp_image.png'
-    file.save(file_path)
-    
-    # Extract text from the image
-    medicine_name = extract_text_from_image(file_path)
-    
-    if medicine_name:
-        return jsonify({"medicine_name": medicine_name}), 200
-    else:
-        return jsonify({"error": "No text extracted from the image"}), 400
+    Please list all the medicines and provide the requested information for each one. Be as precise as possible. If no details are available, leave the fields blank or mention that they are not provided.
 
-# Route to get information about the medicine using the extracted name
-@app.route('/get_info', methods=['POST'])
-def query_medicine_info():
-    data = request.get_json()
-    medicine_name = data.get('medicine_name')
-    
-    if not medicine_name:
-        return jsonify({"error": "No medicine name provided"}), 400
-    
-    model_response = query_model(medicine_name)
-    
-    # Here you could optionally parse model_response into structured fields if desired.
-    # For now, we simply return the full response.
-    return jsonify({"model_response": model_response}), 200
+    Thank you!
 
-if __name__ == '__main__':
-    app.run(debug=True)
+    """
+
+# ✅ API for extracting text from prescription image
+@app.post("/chat/uploadPrescription")
+async def upload_prescription(image: UploadFile = File(...)):
+    try:
+        # Read image data
+        image_data = await image.read()
+        
+        # Extract text from the image using Tesseract OCR
+        extracted_text = extract_text_from_image(image_data)
+        
+        # Create a prompt for the Gemini model based on the extracted text
+        prompt = create_prescription_prompt(extracted_text)
+
+        # Generate response from Gemini model
+        response = model.generate_content(prompt)
+        bot_response = response.text.strip() if hasattr(response, "text") else "No response generated."
+
+        return {
+            "extracted_text": extracted_text,
+            "bot_response": bot_response
+        }
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error processing prescription: {str(e)}")
