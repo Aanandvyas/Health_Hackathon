@@ -16,6 +16,18 @@ const parseMedicineInfo = (text: string) => {
   };
 };
 
+// Helper function to format text as bullet points and handle new lines with ** and *
+const formatTextAsBulletPoints = (text: string) => {
+  return text
+    .split('\n')  // Split by line breaks
+    .map((line, index) => {
+      if (line.trim()) {
+        return <li key={index}><span>{line.trim()}</span></li>; // List item for each bullet point
+      }
+      return null;
+    });
+};
+
 const PrescriptionManager: React.FC = () => {
   const [image, setImage] = useState<File | null>(null);
   const [medicineData, setMedicineData] = useState<any>(null);
@@ -54,7 +66,6 @@ const PrescriptionManager: React.FC = () => {
         },
       });
 
-      // Assuming bot response contains a valid result after OCR extraction
       const medicineName = extractResponse.data.bot_response;
 
       // Fetching detailed medicine information
@@ -115,25 +126,31 @@ const PrescriptionManager: React.FC = () => {
 
         {medicineData && (
           <div className="space-y-4">
-            
-            
             <div>
-              <h4 className="text-xl font-semibold">Medicine Name</h4>
-              <p>{medicineData.Name ? medicineData.Name.split('\n').map((line: string, index: number) => <span key={index}>{line}<br /></span>) : 'Not available'}</p>
+              <h4 className="text-xl font-semibold">**Medicine Name**</h4>
+              <ul>{formatTextAsBulletPoints(medicineData.Name || '**Not available**')}</ul>
             </div>
-            <div>
-              <h4 className="text-xl font-semibold">Description</h4>
-              <p>{medicineData.description ? medicineData.description.split('\n').map((line: string, index: number) => <span key={index}>{line}<br /></span>) : 'Not available'}</p>
-            </div>
-            <div>
-              <h4 className="text-xl font-semibold">Dosage</h4>
-              <p>{medicineData.dosage ? medicineData.dosage.split('\n').map((line: string, index: number) => <span key={index}>{line}<br /></span>) : 'Not available'}</p>
-            </div>
-            <div>
-              <h4 className="text-xl font-semibold">Side Effects</h4>
-              <p>{medicineData.sideEffects ? medicineData.sideEffects.split('\n').map((line: string, index: number) => <span key={index}>{line}<br /></span>) : 'Not available'}</p>
-            </div>
-            
+
+            {medicineData.description && (
+              <div>
+                <h4 className="text-xl font-semibold">**Description**</h4>
+                <ul>{formatTextAsBulletPoints(medicineData.description)}</ul>
+              </div>
+            )}
+
+            {medicineData.dosage && (
+              <div>
+                <h4 className="text-xl font-semibold">**Dosage**</h4>
+                <ul>{formatTextAsBulletPoints(medicineData.dosage)}</ul>
+              </div>
+            )}
+
+            {medicineData.sideEffects && (
+              <div>
+                <h4 className="text-xl font-semibold">**Side Effects**</h4>
+                <ul>{formatTextAsBulletPoints(medicineData.sideEffects)}</ul>
+              </div>
+            )}
           </div>
         )}
       </div>
