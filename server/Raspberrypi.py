@@ -1,5 +1,3 @@
-# seizure_detection_server.py (run on Laptop)
-
 from flask import Flask, request, jsonify
 import tensorflow as tf
 import numpy as np
@@ -18,7 +16,7 @@ def home():
 @app.route('/predict', methods=['POST'])
 def predict():
     try:
-        # Receive sensor data from Raspberry Pi
+        # Receive sensor data 
         data = request.get_json()
         input_data = np.array(data['features']).reshape(1, -1)
 
@@ -27,7 +25,7 @@ def predict():
 
         # Make prediction
         prediction = model.predict(input_scaled)
-        result = int(prediction[0][0] > 0.5)  # Binary classification (0 = No Seizure, 1 = Seizure)
+        result = int(prediction[0][0] > 0.5)  # Binary classification
 
         return jsonify({"prediction": result})
 
@@ -35,4 +33,4 @@ def predict():
         return jsonify({"error": str(e)})
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5050)  # Make server accessible over local network
+    app.run(host='0.0.0.0', port=5050)

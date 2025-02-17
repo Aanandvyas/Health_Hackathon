@@ -12,12 +12,10 @@ from bson import ObjectId
 import google.generativeai as genai
 import base64
 
-# Load environment variables
 load_dotenv()
 MONGO_URI = os.getenv("MONGO_URI")
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
-# Validate API Key
 if not GEMINI_API_KEY:
     raise RuntimeError("❌ Google API key is missing. Set 'GEMINI_API_KEY' in environment variables.")
 
@@ -30,7 +28,7 @@ app = FastAPI()
 # Enable CORS for frontend communication
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Set this to your frontend domain in production
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -38,9 +36,9 @@ app.add_middleware(
 
 # Connect to MongoDB
 client = MongoClient(MONGO_URI)
-db = client.healthDB  # Database Name
-patients_collection = db.patients  # Patients Collection
-chat_history_collection = db.chat_history  # Chat History Collection
+db = client.healthDB
+patients_collection = db.patients
+chat_history_collection = db.chat_history
 
 # Pydantic model for Patient
 class Patient(BaseModel):
@@ -51,7 +49,7 @@ class Patient(BaseModel):
 
 # Pydantic model for Chat Requests
 class ChatRequest(BaseModel):
-    patient_id: str  # MongoDB ObjectId as a string
+    patient_id: str
     user_message: str
 
 # Gemini model configuration
@@ -86,13 +84,10 @@ async def upload_image(patient_id: str = Form(...), user_message: str = Form("")
             # Read the uploaded image file
             image_data = await image.read()
         
-        # Prepare a response based on the user message and image (if any)
-        # Validate patient existence
         patient = patients_collection.find_one({"_id": ObjectId(patient_id)})
         if not patient:
             raise HTTPException(status_code=404, detail="Patient not found")
 
-        # Format patient details into context
         patient_context = (
             f"Patient Details:\n"
             f"- Name: {patient['name']}\n"
@@ -102,15 +97,12 @@ async def upload_image(patient_id: str = Form(...), user_message: str = Form("")
             f"Now respond to the following message from the patient:"
         )
 
-        # Combine patient context with user message and image presence
         full_prompt = f"{patient_context}\n\nUser: {user_message}\n" + ("Image attached." if image_data else "")
         
         # Generate response using Gemini model
         response = model.generate_content(full_prompt)
         bot_response = response.text.strip() if hasattr(response, "text") else "No response generated."
         
-        # Here you might want to store or process the image as per your use case
-        # For now, just returning the response and mentioning image presence
         return {
             "patient_id": patient_id,
             "user_message": user_message,
@@ -121,14 +113,13 @@ async def upload_image(patient_id: str = Form(...), user_message: str = Form("")
     except Exception as e:
         return {"error": str(e)}
 
-# ✅ API for Chatbot Interaction
+#API for Chatbot Interaction
 @app.post("/chat/chatWithBot")
 def chat_with_bot(chat_request: ChatRequest):
     try:
         patient_id = chat_request.patient_id
         user_message = chat_request.user_message
 
-        # Validate patient existence
         patient = patients_collection.find_one({"_id": ObjectId(patient_id)})
         if not patient:
             raise HTTPException(status_code=404, detail="Patient not found")
@@ -150,7 +141,7 @@ def chat_with_bot(chat_request: ChatRequest):
         response = model.generate_content(full_prompt)
         bot_response = response.text.strip() if hasattr(response, "text") else "Sorry, I couldn't generate a response."
 
-        # Store chat in MongoDB
+        # Store chat
         chat_entry = {
             "patient_id": ObjectId(patient_id),
             "user_message": user_message,

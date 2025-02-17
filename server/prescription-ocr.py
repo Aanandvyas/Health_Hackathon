@@ -7,33 +7,29 @@ import google.generativeai as genai
 from PIL import Image
 from io import BytesIO
 
-# Load environment variables
 load_dotenv()
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
-# Validate API Key
 if not GEMINI_API_KEY:
     raise RuntimeError("❌ Google API key is missing. Set 'GEMINI_API_KEY' in environment variables.")
 
-# Configure Gemini API
 genai.configure(api_key=GEMINI_API_KEY)
 
-# Initialize FastAPI app
 app = FastAPI()
 
 # CORS Configuration
 origins = [
-    "http://localhost:5173",  # Your frontend running on localhost:5173 (adjust this port as necessary)
-    "http://localhost:3000",  # If your frontend is running on localhost:3000
+    "http://localhost:5173",  
+    "http://localhost:3000",
 ]
 
-# Add CORSMiddleware to the app
+# Add CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,  # Allows requests from specified origins
+    allow_origins=origins,
     allow_credentials=True,
-    allow_methods=["*"],  # Allows all methods (GET, POST, etc.)
-    allow_headers=["*"],  # Allows all headers
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # Gemini model configuration
@@ -83,24 +79,19 @@ def create_prescription_prompt(extracted_text: str) -> str:
 # In-memory storage for storing bot responses
 bot_responses = {}
 
-# ✅ API for extracting text from prescription image and saving bot response
+#API for extracting text from prescription image and saving bot response
 @app.post("/chat/uploadPrescription")
 async def upload_prescription(image: UploadFile = File(...)):
     try:
-        # Read image data
         image_data = await image.read()
-        
-        # Extract text from the image using Tesseract OCR
+             
         extracted_text = extract_text_from_image(image_data)
         
-        # Create a prompt for the Gemini model based on the extracted text
         prompt = create_prescription_prompt(extracted_text)
 
-        # Generate response from Gemini model
         response = model.generate_content(prompt)
         bot_response = response.text.strip() if hasattr(response, "text") else "No response generated."
 
-        # Save the bot response in memory with a unique key
         bot_responses['latest'] = bot_response
 
         return {
@@ -111,11 +102,10 @@ async def upload_prescription(image: UploadFile = File(...)):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error processing prescription: {str(e)}")
 
-# ✅ API for getting the bot response (GET request)
+#API for getting the bot response
 @app.get("/chat/getBotResponse")
 async def get_bot_response():
     try:
-        # Retrieve the latest bot response from the in-memory storage
         bot_response = bot_responses.get('latest', None)
         
         if not bot_response:
