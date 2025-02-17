@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 import google.generativeai as genai
 from PIL import Image
 from io import BytesIO
+from typing import Optional
 
 # Load environment variables
 load_dotenv()
@@ -62,10 +63,12 @@ def create_prescription_prompt(extracted_text: str) -> str:
     Please list all the medicines and provide the requested information for each one. Be as precise as possible. If no details are available, leave the fields blank or mention that they are not provided.
 
     Thank you!
-
     """
 
-# ✅ API for extracting text from prescription image
+# In-memory storage for storing bot responses
+bot_responses = {}
+
+# ✅ API for extracting text from prescription image and saving bot response
 @app.post("/chat/uploadPrescription")
 async def upload_prescription(image: UploadFile = File(...)):
     try:
@@ -82,6 +85,9 @@ async def upload_prescription(image: UploadFile = File(...)):
         response = model.generate_content(prompt)
         bot_response = response.text.strip() if hasattr(response, "text") else "No response generated."
 
+        # Save the bot response in memory with a unique key
+        bot_responses['latest'] = bot_response
+
         return {
             "extracted_text": extracted_text,
             "bot_response": bot_response
@@ -89,3 +95,18 @@ async def upload_prescription(image: UploadFile = File(...)):
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error processing prescription: {str(e)}")
+
+# ✅ API for getting the bot response (GET request)
+@app.get("/chat/getBotResponse")
+async def get_bot_response():
+    try:
+        # Retrieve the latest bot response from the in-memory storage
+        bot_response = bot_responses.get('latest', None)
+        
+        if not bot_response:
+            raise HTTPException(status_code=404, detail="No bot response found. Please upload a prescription first.")
+        
+        return {"bot_response": bot_response}
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error retrieving bot response: {str(e)}")
