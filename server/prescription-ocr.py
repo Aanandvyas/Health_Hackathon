@@ -1,11 +1,11 @@
 import os
 import pytesseract
-from fastapi import FastAPI, HTTPException, File, UploadFile, Form
+from fastapi import FastAPI, HTTPException, File, UploadFile
+from fastapi.middleware.cors import CORSMiddleware  # Import CORSMiddleware
 from dotenv import load_dotenv
 import google.generativeai as genai
 from PIL import Image
 from io import BytesIO
-from typing import Optional
 
 # Load environment variables
 load_dotenv()
@@ -18,8 +18,23 @@ if not GEMINI_API_KEY:
 # Configure Gemini API
 genai.configure(api_key=GEMINI_API_KEY)
 
-# Initialize FastAPI
+# Initialize FastAPI app
 app = FastAPI()
+
+# CORS Configuration
+origins = [
+    "http://localhost:5173",  # Your frontend running on localhost:5173 (adjust this port as necessary)
+    "http://localhost:3000",  # If your frontend is running on localhost:3000
+]
+
+# Add CORSMiddleware to the app
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,  # Allows requests from specified origins
+    allow_credentials=True,
+    allow_methods=["*"],  # Allows all methods (GET, POST, etc.)
+    allow_headers=["*"],  # Allows all headers
+)
 
 # Gemini model configuration
 generation_config = {
