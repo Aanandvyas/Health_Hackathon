@@ -2,7 +2,7 @@ import requests
 import folium
 from geopy.geocoders import Nominatim
 
-def find_hospitals_osm(postal_code, radius=5000):
+def find_hospitals_osm(postal_code, radius=4500):
     """Find nearby hospitals using OpenStreetMap Overpass API based on Indian postal code"""
     # Convert postal code to coordinates (restricted to India)
     geolocator = Nominatim(user_agent="geo_locator")
