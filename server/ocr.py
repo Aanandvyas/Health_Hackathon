@@ -60,7 +60,7 @@ def extract_text_from_image(image_data: bytes) -> str:
 def create_prescription_prompt(extracted_text: str) -> str:
     return f"""
     You are an AI assistant designed to extract and identify medicinal information from a prescription. The following prescription contains one or more medicines.
-
+    
     Please extract all the medicine names from the given text and list them. For each identified medicine, provide the following details in a structured format:
 
     1. **Medicine Name**: The name of the medicine.
