@@ -16,6 +16,18 @@ const parseMedicineInfo = (text: string) => {
   };
 };
 
+// Helper function to format text as bullet points and handle new lines with ** and *
+const formatTextAsBulletPoints = (text: string) => {
+  return text
+    .split('\n')  // Split by line breaks
+    .map((line, index) => {
+      if (line.trim()) {
+        return <li key={index}><span>{line.trim()}</span></li>; // List item for each bullet point
+      }
+      return null;
+    });
+};
+
 const PrescriptionManager: React.FC = () => {
   const [image, setImage] = useState<File | null>(null);
   const [medicineData, setMedicineData] = useState<any>(null);
@@ -38,7 +50,7 @@ const PrescriptionManager: React.FC = () => {
     setError(null);
 
     const formData = new FormData();
-    formData.append('prescription', image);
+    formData.append('image', image);  // Updated key to 'image' to match backend
 
     try {
       const validTypes = ['image/png', 'image/jpeg', 'image/jpg'];
@@ -48,21 +60,19 @@ const PrescriptionManager: React.FC = () => {
         return;
       }
 
-      const extractResponse = await axios.post('http://127.0.0.1:5000/extract_medicine_name', formData, {
+      const extractResponse = await axios.post('http://127.0.0.1:5000/chat/uploadPrescription', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
 
-      const medicineName = extractResponse.data.medicine_name;
+      const medicineName = extractResponse.data.bot_response;
 
-      const infoResponse = await axios.post('http://127.0.0.1:5000/get_info', { medicine_name: medicineName });
+      // Fetching detailed medicine information
+      const infoResponse = await axios.get('http://127.0.0.1:5000/chat/getBotResponse');
+      const parsedInfo = parseMedicineInfo(infoResponse.data.bot_response);
 
-      const parsedInfo = parseMedicineInfo(infoResponse.data.model_response);
-
-      const { name, ...restParsedInfo } = parsedInfo;
-
-      setMedicineData({ name: medicineName, ...restParsedInfo });
+      setMedicineData({ Name: medicineName, ...parsedInfo });
     } catch (err) {
       setError('Error uploading image or fetching data.');
     } finally {
@@ -72,6 +82,7 @@ const PrescriptionManager: React.FC = () => {
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row items-center justify-center bg-gray-100 p-8 space-y-8 md:space-y-0">
+      {/* Form Section */}
       <div className="w-full md:w-1/3 max-w-lg bg-white p-8 rounded-lg shadow-lg md:mr-8">
         <h1 className="text-4xl font-semibold mb-6 text-center">Prescription Manager</h1>
 
@@ -101,6 +112,7 @@ const PrescriptionManager: React.FC = () => {
         {error && <p className="mt-4 text-red-500 text-center">{error}</p>}
       </div>
 
+      {/* Medicine Info Section */}
       <div className="w-full md:w-2/3 max-w-2xl bg-white p-8 rounded-lg shadow-lg">
         <h3 className="text-3xl font-semibold mb-6 text-center">
           {medicineData ? 'Medicine Information' : 'Please upload a prescription to get medicine details'}
@@ -113,36 +125,33 @@ const PrescriptionManager: React.FC = () => {
         )}
 
         {medicineData && (
-          <table className="min-w-full bg-white">
-            <thead>
-              <tr>
-                <th className="py-2 px-4 border-b border-gray-200 bg-gray-100 text-left text-sm leading-4 font-medium text-gray-600 uppercase tracking-wider">
-                  Field
-                </th>
-                <th className="py-2 px-4 border-b border-gray-200 bg-gray-100 text-left text-sm leading-4 font-medium text-gray-600 uppercase tracking-wider">
-                  Information
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td className="py-2 px-4 border-b border-gray-200">Name</td>
-                <td className="py-2 px-4 border-b border-gray-200">{medicineData.name || 'Not available'}</td>
-              </tr>
-              <tr>
-                <td className="py-2 px-4 border-b border-gray-200">Description</td>
-                <td className="py-2 px-4 border-b border-gray-200">{medicineData.description || 'Not available'}</td>
-              </tr>
-              <tr>
-                <td className="py-2 px-4 border-b border-gray-200">Dosage</td>
-                <td className="py-2 px-4 border-b border-gray-200">{medicineData.dosage || 'Not available'}</td>
-              </tr>
-              <tr>
-                <td className="py-2 px-4 border-b border-gray-200">Side Effects</td>
-                <td className="py-2 px-4 border-b border-gray-200">{medicineData.sideEffects || 'Not available'}</td>
-              </tr>
-            </tbody>
-          </table>
+          <div className="space-y-4">
+            <div>
+              <h4 className="text-xl font-semibold">**Medicine Name**</h4>
+              <ul>{formatTextAsBulletPoints(medicineData.Name || '**Not available**')}</ul>
+            </div>
+
+            {medicineData.description && (
+              <div>
+                <h4 className="text-xl font-semibold">**Description**</h4>
+                <ul>{formatTextAsBulletPoints(medicineData.description)}</ul>
+              </div>
+            )}
+
+            {medicineData.dosage && (
+              <div>
+                <h4 className="text-xl font-semibold">**Dosage**</h4>
+                <ul>{formatTextAsBulletPoints(medicineData.dosage)}</ul>
+              </div>
+            )}
+
+            {medicineData.sideEffects && (
+              <div>
+                <h4 className="text-xl font-semibold">**Side Effects**</h4>
+                <ul>{formatTextAsBulletPoints(medicineData.sideEffects)}</ul>
+              </div>
+            )}
+          </div>
         )}
       </div>
     </div>
