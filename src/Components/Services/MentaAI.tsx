@@ -100,7 +100,7 @@ const MentaAI: React.FC = () => {
       <div className="flex-none p-4 bg-green-500 text-white rounded-t-lg flex items-center justify-between">
         <h2 className="text-xl font-bold">MentaAI Chat</h2>
       </div>
-      <div className="flex-1 p-4 bg-white rounded-b-lg shadow-md overflow-hidden">
+      <div className="flex-1 p-4 bg-white rounded-b-lg shadow-md overflow-auto">
         {messages.map((message, index) => (
           <div key={index} className={`mb-3 p-3 rounded-lg ${message.user === 'You' ? 'bg-green-100 self-end' : 'bg-gray-200 self-start'}`}>
             <strong>{message.user}:</strong>
