@@ -1,0 +1,11 @@
+node_modules/
+node_modules
+.vscode
+.vs
+__pycache__
+*.mov
+.mp3
+.mp4
+HealthMenta_pic
+health
+ElevenLabs

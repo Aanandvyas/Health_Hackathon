@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seizure Detection</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            width: 300px;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .result {
+            font-size: 18px;
+            text-align: center;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px;
+            width: 100%;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Seizure Detection</h1>
+    <div id="result" class="result">You are safe.</div> <!-- Default message -->
+    <button onclick="startPrediction()">Start Prediction</button>
+</div>
+
+<script>
+    // Fetch the current prediction state (GET request)
+    function getPrediction() {
+        fetch('http://127.0.0.1:5050/get_predict', {
+            method: 'GET',
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Current Prediction:', data.prediction);  // Log current prediction state
+            updateResult(data.prediction);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred while fetching prediction data.');
+        });
+    }
+
+    // Update the prediction result message on the page
+    function updateResult(prediction) {
+        const resultDiv = document.getElementById('result');
+        if (prediction === 1) {
+            resultDiv.textContent = "⚠️ Warning! Seizure Detected! ⚠️";
+            resultDiv.style.color = 'red';
+        } else {
+            resultDiv.textContent = "You are safe.";
+            resultDiv.style.color = 'green';
+        }
+    }
+
+    // Start the prediction process and update prediction state (POST request)
+    function startPrediction() {
+        // Simulate a seizure detection event (toggle between 0 and 1)
+        const newPrediction = Math.round(Math.random());  // Randomly toggle between 0 and 1 (can be replaced with real data)
+
+        // Send the new prediction state to the backend (POST request)
+        fetch('http://127.0.0.1:5000/predict', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ prediction: newPrediction })
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Prediction updated:', data.prediction);  // Log updated prediction state
+            updateResult(data.prediction);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            // alert('An error occurred while updating prediction data.');
+        });
+    }
+
+    // Fetch the current prediction state on page load and every 1 second
+    window.onload = function() {
+        getPrediction();
+        setInterval(getPrediction, 1000);  // Fetch prediction every 1 second
+    };
+</script>
+
+</body>
+</html>

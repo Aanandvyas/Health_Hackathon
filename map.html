@@ -1,0 +1,1788 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    
+        <script>
+            L_NO_TOUCH = false;
+            L_DISABLE_3D = false;
+        </script>
+    
+    <style>html, body {width: 100%;height: 100%;margin: 0;padding: 0;}</style>
+    <style>#map {position:absolute;top:0;bottom:0;right:0;left:0;}</style>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+    
+            <meta name="viewport" content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+            <style>
+                #map_435f88cf2e6292837605a47699ac84e9 {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+                .leaflet-container { font-size: 1rem; }
+            </style>
+        
+</head>
+<body>
+    
+    
+            <div class="folium-map" id="map_435f88cf2e6292837605a47699ac84e9" ></div>
+        
+</body>
+<script>
+    
+    
+            var map_435f88cf2e6292837605a47699ac84e9 = L.map(
+                "map_435f88cf2e6292837605a47699ac84e9",
+                {
+                    center: [18.572918816216216, 73.89246854594595],
+                    crs: L.CRS.EPSG3857,
+                    ...{
+  "zoom": 13,
+  "zoomControl": true,
+  "preferCanvas": false,
+}
+
+                }
+            );
+
+            
+
+        
+    
+            var tile_layer_058805d11bd0a697c8245fa498cdc873 = L.tileLayer(
+                "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+                {
+  "minZoom": 0,
+  "maxZoom": 19,
+  "maxNativeZoom": 19,
+  "noWrap": false,
+  "attribution": "\u0026copy; \u003ca href=\"https://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors",
+  "subdomains": "abc",
+  "detectRetina": false,
+  "tms": false,
+  "opacity": 1,
+}
+
+            );
+        
+    
+            tile_layer_058805d11bd0a697c8245fa498cdc873.addTo(map_435f88cf2e6292837605a47699ac84e9);
+        
+    
+            var marker_c58d515a1bfcfbe553e82990e65af0d4 = L.marker(
+                [18.6186748, 73.8699487],
+                {
+}
+            ).addTo(map_435f88cf2e6292837605a47699ac84e9);
+        
+    
+            var icon_5297c48ce676c49f2f69164282e0f9d8 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "red",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+            marker_c58d515a1bfcfbe553e82990e65af0d4.setIcon(icon_5297c48ce676c49f2f69164282e0f9d8);
+        
+    
+        var popup_445f55cb747db3ca5fd593b1fe457b33 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_5d5e7a3dba8715fec072b9cde7d463d5 = $(`<div id="html_5d5e7a3dba8715fec072b9cde7d463d5" style="width: 100.0%; height: 100.0%;">Rode Hospital</div>`)[0];
+                popup_445f55cb747db3ca5fd593b1fe457b33.setContent(html_5d5e7a3dba8715fec072b9cde7d463d5);
+            
+        
+
+        marker_c58d515a1bfcfbe553e82990e65af0d4.bindPopup(popup_445f55cb747db3ca5fd593b1fe457b33)
+        ;
+
+        
+    
+    
+            marker_c58d515a1bfcfbe553e82990e65af0d4.bindTooltip(
+                `<div>
+                     Click for Hospital Name
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var marker_d64b190c68047b6af09e6541cfdff738 = L.marker(
+                [18.5463494, 73.8880362],
+                {
+}
+            ).addTo(map_435f88cf2e6292837605a47699ac84e9);
+        
+    
+            var icon_e5d8a7ba8d4f940871ba9138b1f36b3e = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "red",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+            marker_d64b190c68047b6af09e6541cfdff738.setIcon(icon_e5d8a7ba8d4f940871ba9138b1f36b3e);
+        
+    
+        var popup_7aa990397e85e7d955d57c4abb9c58e5 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_eec3904923f7504f207586f9fcddc2da = $(`<div id="html_eec3904923f7504f207586f9fcddc2da" style="width: 100.0%; height: 100.0%;">Amit Hospital</div>`)[0];
+                popup_7aa990397e85e7d955d57c4abb9c58e5.setContent(html_eec3904923f7504f207586f9fcddc2da);
+            
+        
+
+        marker_d64b190c68047b6af09e6541cfdff738.bindPopup(popup_7aa990397e85e7d955d57c4abb9c58e5)
+        ;
+
+        
+    
+    
+            marker_d64b190c68047b6af09e6541cfdff738.bindTooltip(
+                `<div>
+                     Click for Hospital Name
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var marker_1256d8bf7eb4ffd6b46dc85d36a06360 = L.marker(
+                [18.5875463, 73.8625391],
+                {
+}
+            ).addTo(map_435f88cf2e6292837605a47699ac84e9);
+        
+    
+            var icon_dd63f83fb9500ba3a42f63b8a54c7745 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "red",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+            marker_1256d8bf7eb4ffd6b46dc85d36a06360.setIcon(icon_dd63f83fb9500ba3a42f63b8a54c7745);
+        
+    
+        var popup_c1c70de9a664689528d7b6c326748549 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_a6995d0ea615f58b4c3532f22e9eb5b4 = $(`<div id="html_a6995d0ea615f58b4c3532f22e9eb5b4" style="width: 100.0%; height: 100.0%;">Lifeline Hospital, Pune</div>`)[0];
+                popup_c1c70de9a664689528d7b6c326748549.setContent(html_a6995d0ea615f58b4c3532f22e9eb5b4);
+            
+        
+
+        marker_1256d8bf7eb4ffd6b46dc85d36a06360.bindPopup(popup_c1c70de9a664689528d7b6c326748549)
+        ;
+
+        
+    
+    
+            marker_1256d8bf7eb4ffd6b46dc85d36a06360.bindTooltip(
+                `<div>
+                     Click for Hospital Name
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var marker_94baa41a8844064b93f324caf77fe165 = L.marker(
+                [18.5732119, 73.8774723],
+                {
+}
+            ).addTo(map_435f88cf2e6292837605a47699ac84e9);
+        
+    
+            var icon_ab401de6cad9248f442420f57987ec1c = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "red",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+            marker_94baa41a8844064b93f324caf77fe165.setIcon(icon_ab401de6cad9248f442420f57987ec1c);
+        
+    
+        var popup_1408bc6ce7dcce7262dd59c531e0a628 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_8e153e6a909e3e7bb7f6a0d860a11abc = $(`<div id="html_8e153e6a909e3e7bb7f6a0d860a11abc" style="width: 100.0%; height: 100.0%;">Vinod Memorial Multispeciality Hospital</div>`)[0];
+                popup_1408bc6ce7dcce7262dd59c531e0a628.setContent(html_8e153e6a909e3e7bb7f6a0d860a11abc);
+            
+        
+
+        marker_94baa41a8844064b93f324caf77fe165.bindPopup(popup_1408bc6ce7dcce7262dd59c531e0a628)
+        ;
+
+        
+    
+    
+            marker_94baa41a8844064b93f324caf77fe165.bindTooltip(
+                `<div>
+                     Click for Hospital Name
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var marker_ca52ca15bfa649976de57ba46eda1d73 = L.marker(
+                [18.5470843, 73.8885243],
+                {
+}
+            ).addTo(map_435f88cf2e6292837605a47699ac84e9);
+        
+    
+            var icon_436e96873f2dbf9bbf341fb77d7c2e19 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "red",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+            marker_ca52ca15bfa649976de57ba46eda1d73.setIcon(icon_436e96873f2dbf9bbf341fb77d7c2e19);
+        
+    
+        var popup_6ee7523d8cba1c97e308a4cd877ccffa = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_0cec4909f26459c3b58d9eae51bfa80f = $(`<div id="html_0cec4909f26459c3b58d9eae51bfa80f" style="width: 100.0%; height: 100.0%;">Om Prasuti Graha</div>`)[0];
+                popup_6ee7523d8cba1c97e308a4cd877ccffa.setContent(html_0cec4909f26459c3b58d9eae51bfa80f);
+            
+        
+
+        marker_ca52ca15bfa649976de57ba46eda1d73.bindPopup(popup_6ee7523d8cba1c97e308a4cd877ccffa)
+        ;
+
+        
+    
+    
+            marker_ca52ca15bfa649976de57ba46eda1d73.bindTooltip(
+                `<div>
+                     Click for Hospital Name
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var marker_63a9edf7b3f66e64d14ad8e9449c8cfd = L.marker(
+                [18.5569451, 73.9074788],
+                {
+}
+            ).addTo(map_435f88cf2e6292837605a47699ac84e9);
+        
+    
+            var icon_190c8048821f1a2ba31a78a843564da8 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "red",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+            marker_63a9edf7b3f66e64d14ad8e9449c8cfd.setIcon(icon_190c8048821f1a2ba31a78a843564da8);
+        
+    
+        var popup_db58fc8024f2e182d27d27c352c2ae87 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_0516386323fc9a681740d44a46fbe258 = $(`<div id="html_0516386323fc9a681740d44a46fbe258" style="width: 100.0%; height: 100.0%;">Jeewan Jyot Multispeciality Medical Care Center</div>`)[0];
+                popup_db58fc8024f2e182d27d27c352c2ae87.setContent(html_0516386323fc9a681740d44a46fbe258);
+            
+        
+
+        marker_63a9edf7b3f66e64d14ad8e9449c8cfd.bindPopup(popup_db58fc8024f2e182d27d27c352c2ae87)
+        ;
+
+        
+    
+    
+            marker_63a9edf7b3f66e64d14ad8e9449c8cfd.bindTooltip(
+                `<div>
+                     Click for Hospital Name
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var marker_746db6fda25035ad1c937c636f9b9d16 = L.marker(
+                [18.5486475, 73.8893055],
+                {
+}
+            ).addTo(map_435f88cf2e6292837605a47699ac84e9);
+        
+    
+            var icon_1d583c3152f29cd63b7ab9377c7336cb = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "red",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+            marker_746db6fda25035ad1c937c636f9b9d16.setIcon(icon_1d583c3152f29cd63b7ab9377c7336cb);
+        
+    
+        var popup_2234a55d8c13f620b02f7526a657fb47 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_2d6db3f659d24210f5b78cbce5d2abd1 = $(`<div id="html_2d6db3f659d24210f5b78cbce5d2abd1" style="width: 100.0%; height: 100.0%;">Shah Hospital</div>`)[0];
+                popup_2234a55d8c13f620b02f7526a657fb47.setContent(html_2d6db3f659d24210f5b78cbce5d2abd1);
+            
+        
+
+        marker_746db6fda25035ad1c937c636f9b9d16.bindPopup(popup_2234a55d8c13f620b02f7526a657fb47)
+        ;
+
+        
+    
+    
+            marker_746db6fda25035ad1c937c636f9b9d16.bindTooltip(
+                `<div>
+                     Click for Hospital Name
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var marker_49cb2d005eb7de5d2705785a5dd64707 = L.marker(
+                [18.5498719, 73.8887711],
+                {
+}
+            ).addTo(map_435f88cf2e6292837605a47699ac84e9);
+        
+    
+            var icon_e3a98834b0133acf51b8a50a26c3bdc2 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "red",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+            marker_49cb2d005eb7de5d2705785a5dd64707.setIcon(icon_e3a98834b0133acf51b8a50a26c3bdc2);
+        
+    
+        var popup_c89feceb6a6c095c1cef8a70a9095cdb = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_cb4dd7b81ed46dc0a28d65472014b41d = $(`<div id="html_cb4dd7b81ed46dc0a28d65472014b41d" style="width: 100.0%; height: 100.0%;">Talesara Hospital</div>`)[0];
+                popup_c89feceb6a6c095c1cef8a70a9095cdb.setContent(html_cb4dd7b81ed46dc0a28d65472014b41d);
+            
+        
+
+        marker_49cb2d005eb7de5d2705785a5dd64707.bindPopup(popup_c89feceb6a6c095c1cef8a70a9095cdb)
+        ;
+
+        
+    
+    
+            marker_49cb2d005eb7de5d2705785a5dd64707.bindTooltip(
+                `<div>
+                     Click for Hospital Name
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var marker_4afcf54f020cd9116976b564fd018c76 = L.marker(
+                [18.6167297, 73.8737755],
+                {
+}
+            ).addTo(map_435f88cf2e6292837605a47699ac84e9);
+        
+    
+            var icon_9c37087ff694c1f327f80b3ed0242738 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "red",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+            marker_4afcf54f020cd9116976b564fd018c76.setIcon(icon_9c37087ff694c1f327f80b3ed0242738);
+        
+    
+        var popup_ef4e3d923eb71607fef57baeb8306437 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_299bc1181ab89c9e3f268605daca201a = $(`<div id="html_299bc1181ab89c9e3f268605daca201a" style="width: 100.0%; height: 100.0%;">Om Hospital, Pune</div>`)[0];
+                popup_ef4e3d923eb71607fef57baeb8306437.setContent(html_299bc1181ab89c9e3f268605daca201a);
+            
+        
+
+        marker_4afcf54f020cd9116976b564fd018c76.bindPopup(popup_ef4e3d923eb71607fef57baeb8306437)
+        ;
+
+        
+    
+    
+            marker_4afcf54f020cd9116976b564fd018c76.bindTooltip(
+                `<div>
+                     Click for Hospital Name
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var marker_2b52a75ccc34c98f0ceb1344d31e0764 = L.marker(
+                [18.5697941, 73.8818973],
+                {
+}
+            ).addTo(map_435f88cf2e6292837605a47699ac84e9);
+        
+    
+            var icon_bfe8df7a4862d2c4be0f81eca815d7c6 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "red",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+            marker_2b52a75ccc34c98f0ceb1344d31e0764.setIcon(icon_bfe8df7a4862d2c4be0f81eca815d7c6);
+        
+    
+        var popup_8f0ecc6c10b1a129dd990f0b28fe78e2 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_f71a4c9d183e9a5b2e0eaf9775dcb3d8 = $(`<div id="html_f71a4c9d183e9a5b2e0eaf9775dcb3d8" style="width: 100.0%; height: 100.0%;">Serene Hospital Pvt Ltd</div>`)[0];
+                popup_8f0ecc6c10b1a129dd990f0b28fe78e2.setContent(html_f71a4c9d183e9a5b2e0eaf9775dcb3d8);
+            
+        
+
+        marker_2b52a75ccc34c98f0ceb1344d31e0764.bindPopup(popup_8f0ecc6c10b1a129dd990f0b28fe78e2)
+        ;
+
+        
+    
+    
+            marker_2b52a75ccc34c98f0ceb1344d31e0764.bindTooltip(
+                `<div>
+                     Click for Hospital Name
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var marker_7b49a335537ea4ca471bc29df16082d2 = L.marker(
+                [18.5618595, 73.892592],
+                {
+}
+            ).addTo(map_435f88cf2e6292837605a47699ac84e9);
+        
+    
+            var icon_effa3a18f14e4ba02705a1a3c184af72 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "red",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+            marker_7b49a335537ea4ca471bc29df16082d2.setIcon(icon_effa3a18f14e4ba02705a1a3c184af72);
+        
+    
+        var popup_37f15c879e815fa8679c3e76c6d947b6 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_4ddbbde2b28c4bd3143c884cc889e59f = $(`<div id="html_4ddbbde2b28c4bd3143c884cc889e59f" style="width: 100.0%; height: 100.0%;">Inaam General Hospital</div>`)[0];
+                popup_37f15c879e815fa8679c3e76c6d947b6.setContent(html_4ddbbde2b28c4bd3143c884cc889e59f);
+            
+        
+
+        marker_7b49a335537ea4ca471bc29df16082d2.bindPopup(popup_37f15c879e815fa8679c3e76c6d947b6)
+        ;
+
+        
+    
+    
+            marker_7b49a335537ea4ca471bc29df16082d2.bindTooltip(
+                `<div>
+                     Click for Hospital Name
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var marker_353c4f241214847edfcabb4d2b4f670a = L.marker(
+                [18.560232, 73.8953506],
+                {
+}
+            ).addTo(map_435f88cf2e6292837605a47699ac84e9);
+        
+    
+            var icon_82a0f3048aa671982ca72e4acfcc9949 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "red",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+            marker_353c4f241214847edfcabb4d2b4f670a.setIcon(icon_82a0f3048aa671982ca72e4acfcc9949);
+        
+    
+        var popup_89cba34c5eaa31ebdd5034e2bfe4ef7f = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_0379e138f39d1389896863032fe90143 = $(`<div id="html_0379e138f39d1389896863032fe90143" style="width: 100.0%; height: 100.0%;">Aditya Eye Hospital & Lasik Centre</div>`)[0];
+                popup_89cba34c5eaa31ebdd5034e2bfe4ef7f.setContent(html_0379e138f39d1389896863032fe90143);
+            
+        
+
+        marker_353c4f241214847edfcabb4d2b4f670a.bindPopup(popup_89cba34c5eaa31ebdd5034e2bfe4ef7f)
+        ;
+
+        
+    
+    
+            marker_353c4f241214847edfcabb4d2b4f670a.bindTooltip(
+                `<div>
+                     Click for Hospital Name
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var marker_50252fd89cfee7c6517bfe3e961876c0 = L.marker(
+                [18.5543086, 73.8971383],
+                {
+}
+            ).addTo(map_435f88cf2e6292837605a47699ac84e9);
+        
+    
+            var icon_5c3a6e4f2b0533a00961e8ac713c16b5 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "red",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+            marker_50252fd89cfee7c6517bfe3e961876c0.setIcon(icon_5c3a6e4f2b0533a00961e8ac713c16b5);
+        
+    
+        var popup_be782616837811042c63f9c471399e3d = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_b59cdb7b54131ee41efa2ba5ed2fcab3 = $(`<div id="html_b59cdb7b54131ee41efa2ba5ed2fcab3" style="width: 100.0%; height: 100.0%;">Sahyadri Super Speciality Hospital</div>`)[0];
+                popup_be782616837811042c63f9c471399e3d.setContent(html_b59cdb7b54131ee41efa2ba5ed2fcab3);
+            
+        
+
+        marker_50252fd89cfee7c6517bfe3e961876c0.bindPopup(popup_be782616837811042c63f9c471399e3d)
+        ;
+
+        
+    
+    
+            marker_50252fd89cfee7c6517bfe3e961876c0.bindTooltip(
+                `<div>
+                     Click for Hospital Name
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var marker_d58ef24d3fb4aed3ef99fb22f43f6af4 = L.marker(
+                [18.56295, 73.8942307],
+                {
+}
+            ).addTo(map_435f88cf2e6292837605a47699ac84e9);
+        
+    
+            var icon_d78506591b894d9757cbaa3c5f92d6e2 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "red",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+            marker_d58ef24d3fb4aed3ef99fb22f43f6af4.setIcon(icon_d78506591b894d9757cbaa3c5f92d6e2);
+        
+    
+        var popup_fcfb12d1d3c8552092052611aea2cc35 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_1dd1db394f513b5066840b9785057724 = $(`<div id="html_1dd1db394f513b5066840b9785057724" style="width: 100.0%; height: 100.0%;">Rutu Anand Hospital</div>`)[0];
+                popup_fcfb12d1d3c8552092052611aea2cc35.setContent(html_1dd1db394f513b5066840b9785057724);
+            
+        
+
+        marker_d58ef24d3fb4aed3ef99fb22f43f6af4.bindPopup(popup_fcfb12d1d3c8552092052611aea2cc35)
+        ;
+
+        
+    
+    
+            marker_d58ef24d3fb4aed3ef99fb22f43f6af4.bindTooltip(
+                `<div>
+                     Click for Hospital Name
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var marker_9a202fe1eaaef51cb38a74eeafa09c08 = L.marker(
+                [18.5565024, 73.8972835],
+                {
+}
+            ).addTo(map_435f88cf2e6292837605a47699ac84e9);
+        
+    
+            var icon_16f28fb7f1e978841dcbc452194a014e = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "red",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+            marker_9a202fe1eaaef51cb38a74eeafa09c08.setIcon(icon_16f28fb7f1e978841dcbc452194a014e);
+        
+    
+        var popup_5aa492c12eaad11163d549c5c733efdf = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_6b0d5cb32a7d0af9675f42be6220d1fc = $(`<div id="html_6b0d5cb32a7d0af9675f42be6220d1fc" style="width: 100.0%; height: 100.0%;">Freedom Fighter Gangaram Karne Hospital</div>`)[0];
+                popup_5aa492c12eaad11163d549c5c733efdf.setContent(html_6b0d5cb32a7d0af9675f42be6220d1fc);
+            
+        
+
+        marker_9a202fe1eaaef51cb38a74eeafa09c08.bindPopup(popup_5aa492c12eaad11163d549c5c733efdf)
+        ;
+
+        
+    
+    
+            marker_9a202fe1eaaef51cb38a74eeafa09c08.bindTooltip(
+                `<div>
+                     Click for Hospital Name
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var marker_269bb998dff913aa8a78d322dc98c64e = L.marker(
+                [18.5623853, 73.8965795],
+                {
+}
+            ).addTo(map_435f88cf2e6292837605a47699ac84e9);
+        
+    
+            var icon_c4776d03a39787a89a9e6185ed5866b4 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "red",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+            marker_269bb998dff913aa8a78d322dc98c64e.setIcon(icon_c4776d03a39787a89a9e6185ed5866b4);
+        
+    
+        var popup_1f344dc0967f854f394e1145e677e03f = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_33eaf5fcfe6660009416791595c0af7d = $(`<div id="html_33eaf5fcfe6660009416791595c0af7d" style="width: 100.0%; height: 100.0%;">Chatrapati Shivray Hospital PMC Pune</div>`)[0];
+                popup_1f344dc0967f854f394e1145e677e03f.setContent(html_33eaf5fcfe6660009416791595c0af7d);
+            
+        
+
+        marker_269bb998dff913aa8a78d322dc98c64e.bindPopup(popup_1f344dc0967f854f394e1145e677e03f)
+        ;
+
+        
+    
+    
+            marker_269bb998dff913aa8a78d322dc98c64e.bindTooltip(
+                `<div>
+                     Click for Hospital Name
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var marker_8d8ac3954eff32c752dace86cd3c7e39 = L.marker(
+                [18.5533588, 73.8989792],
+                {
+}
+            ).addTo(map_435f88cf2e6292837605a47699ac84e9);
+        
+    
+            var icon_a4eebcb3ba532b4f98cd1e3b005cabf4 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "red",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+            marker_8d8ac3954eff32c752dace86cd3c7e39.setIcon(icon_a4eebcb3ba532b4f98cd1e3b005cabf4);
+        
+    
+        var popup_8ebd6f3d7023ba8626c05de8ccb133a3 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_cb9f63e330d61b29b782ec58a19426cb = $(`<div id="html_cb9f63e330d61b29b782ec58a19426cb" style="width: 100.0%; height: 100.0%;">Shree Hospital</div>`)[0];
+                popup_8ebd6f3d7023ba8626c05de8ccb133a3.setContent(html_cb9f63e330d61b29b782ec58a19426cb);
+            
+        
+
+        marker_8d8ac3954eff32c752dace86cd3c7e39.bindPopup(popup_8ebd6f3d7023ba8626c05de8ccb133a3)
+        ;
+
+        
+    
+    
+            marker_8d8ac3954eff32c752dace86cd3c7e39.bindTooltip(
+                `<div>
+                     Click for Hospital Name
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var marker_4b708d1ec400bc88234aba82a3ec43fb = L.marker(
+                [18.5536181, 73.899622],
+                {
+}
+            ).addTo(map_435f88cf2e6292837605a47699ac84e9);
+        
+    
+            var icon_5de060ef7abd17759252fc4b86db6918 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "red",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+            marker_4b708d1ec400bc88234aba82a3ec43fb.setIcon(icon_5de060ef7abd17759252fc4b86db6918);
+        
+    
+        var popup_041f582716ec70839a467e157237a86d = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_c2c8e835e33ac403b963b0a212fd523e = $(`<div id="html_c2c8e835e33ac403b963b0a212fd523e" style="width: 100.0%; height: 100.0%;">Neney's Hospital</div>`)[0];
+                popup_041f582716ec70839a467e157237a86d.setContent(html_c2c8e835e33ac403b963b0a212fd523e);
+            
+        
+
+        marker_4b708d1ec400bc88234aba82a3ec43fb.bindPopup(popup_041f582716ec70839a467e157237a86d)
+        ;
+
+        
+    
+    
+            marker_4b708d1ec400bc88234aba82a3ec43fb.bindTooltip(
+                `<div>
+                     Click for Hospital Name
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var marker_627f2ce67448e09aba6cde6630f6a91f = L.marker(
+                [18.561134, 73.921412],
+                {
+}
+            ).addTo(map_435f88cf2e6292837605a47699ac84e9);
+        
+    
+            var icon_3d125a1eb9abcdc180a1786c37cdd352 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "red",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+            marker_627f2ce67448e09aba6cde6630f6a91f.setIcon(icon_3d125a1eb9abcdc180a1786c37cdd352);
+        
+    
+        var popup_fc121b91330f8244aafc67320cd42817 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_82d1b7fdc5f166aeb194fb5d0abd4b06 = $(`<div id="html_82d1b7fdc5f166aeb194fb5d0abd4b06" style="width: 100.0%; height: 100.0%;">PMC Sangamnerkar Hospital (N. G. O.)</div>`)[0];
+                popup_fc121b91330f8244aafc67320cd42817.setContent(html_82d1b7fdc5f166aeb194fb5d0abd4b06);
+            
+        
+
+        marker_627f2ce67448e09aba6cde6630f6a91f.bindPopup(popup_fc121b91330f8244aafc67320cd42817)
+        ;
+
+        
+    
+    
+            marker_627f2ce67448e09aba6cde6630f6a91f.bindTooltip(
+                `<div>
+                     Click for Hospital Name
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var marker_e7ce358f5138ed3743198fa9c0e5bf1e = L.marker(
+                [18.5770661, 73.8990724],
+                {
+}
+            ).addTo(map_435f88cf2e6292837605a47699ac84e9);
+        
+    
+            var icon_614b67c12277dd6609e0c356b41859a8 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "red",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+            marker_e7ce358f5138ed3743198fa9c0e5bf1e.setIcon(icon_614b67c12277dd6609e0c356b41859a8);
+        
+    
+        var popup_d10fbe7c30d42aff828ff9f655442a5d = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_16f08cc343f7aabb2cb8fda490f2b014 = $(`<div id="html_16f08cc343f7aabb2cb8fda490f2b014" style="width: 100.0%; height: 100.0%;">Chris Rock Edward Paul Hospital</div>`)[0];
+                popup_d10fbe7c30d42aff828ff9f655442a5d.setContent(html_16f08cc343f7aabb2cb8fda490f2b014);
+            
+        
+
+        marker_e7ce358f5138ed3743198fa9c0e5bf1e.bindPopup(popup_d10fbe7c30d42aff828ff9f655442a5d)
+        ;
+
+        
+    
+    
+            marker_e7ce358f5138ed3743198fa9c0e5bf1e.bindTooltip(
+                `<div>
+                     Click for Hospital Name
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var marker_9f085dca0e944229e61ccab9dad498c1 = L.marker(
+                [18.5977182, 73.9028326],
+                {
+}
+            ).addTo(map_435f88cf2e6292837605a47699ac84e9);
+        
+    
+            var icon_18c31810c5550b153e5365aca3c01714 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "red",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+            marker_9f085dca0e944229e61ccab9dad498c1.setIcon(icon_18c31810c5550b153e5365aca3c01714);
+        
+    
+        var popup_8ee7d556000a4a6f2d2129b9826bd9da = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_3abeaa09f8446dcd07f4cac0ee3a6b84 = $(`<div id="html_3abeaa09f8446dcd07f4cac0ee3a6b84" style="width: 100.0%; height: 100.0%;">Dr Bhore's Mother & Child Clinic</div>`)[0];
+                popup_8ee7d556000a4a6f2d2129b9826bd9da.setContent(html_3abeaa09f8446dcd07f4cac0ee3a6b84);
+            
+        
+
+        marker_9f085dca0e944229e61ccab9dad498c1.bindPopup(popup_8ee7d556000a4a6f2d2129b9826bd9da)
+        ;
+
+        
+    
+    
+            marker_9f085dca0e944229e61ccab9dad498c1.bindTooltip(
+                `<div>
+                     Click for Hospital Name
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var marker_9e631f5de0fa350dc08c94886df01dfc = L.marker(
+                [18.596865, 73.9001514],
+                {
+}
+            ).addTo(map_435f88cf2e6292837605a47699ac84e9);
+        
+    
+            var icon_327578320c76e77945df286f8034a061 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "red",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+            marker_9e631f5de0fa350dc08c94886df01dfc.setIcon(icon_327578320c76e77945df286f8034a061);
+        
+    
+        var popup_fb6f8560cb46021cbaa23736e89d4d38 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_ea13824f36d5a90ba00f853d566d27ac = $(`<div id="html_ea13824f36d5a90ba00f853d566d27ac" style="width: 100.0%; height: 100.0%;">CT Nursing Home</div>`)[0];
+                popup_fb6f8560cb46021cbaa23736e89d4d38.setContent(html_ea13824f36d5a90ba00f853d566d27ac);
+            
+        
+
+        marker_9e631f5de0fa350dc08c94886df01dfc.bindPopup(popup_fb6f8560cb46021cbaa23736e89d4d38)
+        ;
+
+        
+    
+    
+            marker_9e631f5de0fa350dc08c94886df01dfc.bindTooltip(
+                `<div>
+                     Click for Hospital Name
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var marker_04c65ab064902d30114adf0b3044273a = L.marker(
+                [18.5490315, 73.8887874],
+                {
+}
+            ).addTo(map_435f88cf2e6292837605a47699ac84e9);
+        
+    
+            var icon_5ac20d1d8cd20062d3d5ebf33aa08128 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "red",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+            marker_04c65ab064902d30114adf0b3044273a.setIcon(icon_5ac20d1d8cd20062d3d5ebf33aa08128);
+        
+    
+        var popup_b40ecedca7b726d7d91479ec480f7f20 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_15d23beca6f78049f78b99839536aa07 = $(`<div id="html_15d23beca6f78049f78b99839536aa07" style="width: 100.0%; height: 100.0%;">Vaibhav Hospital</div>`)[0];
+                popup_b40ecedca7b726d7d91479ec480f7f20.setContent(html_15d23beca6f78049f78b99839536aa07);
+            
+        
+
+        marker_04c65ab064902d30114adf0b3044273a.bindPopup(popup_b40ecedca7b726d7d91479ec480f7f20)
+        ;
+
+        
+    
+    
+            marker_04c65ab064902d30114adf0b3044273a.bindTooltip(
+                `<div>
+                     Click for Hospital Name
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var marker_fc0c741f75e2a0bcd8ee0678f150444a = L.marker(
+                [18.6040867, 73.9153855],
+                {
+}
+            ).addTo(map_435f88cf2e6292837605a47699ac84e9);
+        
+    
+            var icon_8eaf1d56d727ba3c7c0d45886287ef35 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "red",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+            marker_fc0c741f75e2a0bcd8ee0678f150444a.setIcon(icon_8eaf1d56d727ba3c7c0d45886287ef35);
+        
+    
+        var popup_11c3f79312c4e18a75e1820dd9eb2c72 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_e22d7b7b5113d265a3e83929acea6c5d = $(`<div id="html_e22d7b7b5113d265a3e83929acea6c5d" style="width: 100.0%; height: 100.0%;">Sathe Hospital</div>`)[0];
+                popup_11c3f79312c4e18a75e1820dd9eb2c72.setContent(html_e22d7b7b5113d265a3e83929acea6c5d);
+            
+        
+
+        marker_fc0c741f75e2a0bcd8ee0678f150444a.bindPopup(popup_11c3f79312c4e18a75e1820dd9eb2c72)
+        ;
+
+        
+    
+    
+            marker_fc0c741f75e2a0bcd8ee0678f150444a.bindTooltip(
+                `<div>
+                     Click for Hospital Name
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var marker_b6f04caf814f1eefad922e8157ecf73d = L.marker(
+                [18.6005779, 73.9096039],
+                {
+}
+            ).addTo(map_435f88cf2e6292837605a47699ac84e9);
+        
+    
+            var icon_61bb0d492fff5e0f19a61e9cb4e0f1d1 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "red",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+            marker_b6f04caf814f1eefad922e8157ecf73d.setIcon(icon_61bb0d492fff5e0f19a61e9cb4e0f1d1);
+        
+    
+        var popup_630963393afc81e2511f2cf1bd575575 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_0b38b7dfad7bb2d69ec474a4df431f76 = $(`<div id="html_0b38b7dfad7bb2d69ec474a4df431f76" style="width: 100.0%; height: 100.0%;">Orchid Hospital</div>`)[0];
+                popup_630963393afc81e2511f2cf1bd575575.setContent(html_0b38b7dfad7bb2d69ec474a4df431f76);
+            
+        
+
+        marker_b6f04caf814f1eefad922e8157ecf73d.bindPopup(popup_630963393afc81e2511f2cf1bd575575)
+        ;
+
+        
+    
+    
+            marker_b6f04caf814f1eefad922e8157ecf73d.bindTooltip(
+                `<div>
+                     Click for Hospital Name
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var marker_2020c2a7d106d191595bfb5f6664eeda = L.marker(
+                [18.5492968, 73.8888427],
+                {
+}
+            ).addTo(map_435f88cf2e6292837605a47699ac84e9);
+        
+    
+            var icon_2020e3499e49745c3901e41a6327938b = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "red",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+            marker_2020c2a7d106d191595bfb5f6664eeda.setIcon(icon_2020e3499e49745c3901e41a6327938b);
+        
+    
+        var popup_ddfb81a7d9ae3421ecca8e3f83250b0c = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_3db4f617a4d26a0d84f0a4216945213e = $(`<div id="html_3db4f617a4d26a0d84f0a4216945213e" style="width: 100.0%; height: 100.0%;">Petals Hospital</div>`)[0];
+                popup_ddfb81a7d9ae3421ecca8e3f83250b0c.setContent(html_3db4f617a4d26a0d84f0a4216945213e);
+            
+        
+
+        marker_2020c2a7d106d191595bfb5f6664eeda.bindPopup(popup_ddfb81a7d9ae3421ecca8e3f83250b0c)
+        ;
+
+        
+    
+    
+            marker_2020c2a7d106d191595bfb5f6664eeda.bindTooltip(
+                `<div>
+                     Click for Hospital Name
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var marker_6f9db202553b6227a0323b5e332614be = L.marker(
+                [18.569842, 73.8823303],
+                {
+}
+            ).addTo(map_435f88cf2e6292837605a47699ac84e9);
+        
+    
+            var icon_54a2e2489337966580955e26a7739afe = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "red",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+            marker_6f9db202553b6227a0323b5e332614be.setIcon(icon_54a2e2489337966580955e26a7739afe);
+        
+    
+        var popup_54fd7126363c307eb64354d57bb84bf3 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_b0aa2c095a5c215cc549366c1f9ac7e4 = $(`<div id="html_b0aa2c095a5c215cc549366c1f9ac7e4" style="width: 100.0%; height: 100.0%;">Serene Hospital</div>`)[0];
+                popup_54fd7126363c307eb64354d57bb84bf3.setContent(html_b0aa2c095a5c215cc549366c1f9ac7e4);
+            
+        
+
+        marker_6f9db202553b6227a0323b5e332614be.bindPopup(popup_54fd7126363c307eb64354d57bb84bf3)
+        ;
+
+        
+    
+    
+            marker_6f9db202553b6227a0323b5e332614be.bindTooltip(
+                `<div>
+                     Click for Hospital Name
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var marker_1a02cbb5e44954206e051dd389c275d8 = L.marker(
+                [18.5725401, 73.8815063],
+                {
+}
+            ).addTo(map_435f88cf2e6292837605a47699ac84e9);
+        
+    
+            var icon_97a85fd2425a0d2d73aea523553366ed = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "red",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+            marker_1a02cbb5e44954206e051dd389c275d8.setIcon(icon_97a85fd2425a0d2d73aea523553366ed);
+        
+    
+        var popup_55ce3c1034bdbc5f5ff843de95bfd4b3 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_c1c5bac6a6b62b7652899e9f4ee0c198 = $(`<div id="html_c1c5bac6a6b62b7652899e9f4ee0c198" style="width: 100.0%; height: 100.0%;">Kasturba General Hospital</div>`)[0];
+                popup_55ce3c1034bdbc5f5ff843de95bfd4b3.setContent(html_c1c5bac6a6b62b7652899e9f4ee0c198);
+            
+        
+
+        marker_1a02cbb5e44954206e051dd389c275d8.bindPopup(popup_55ce3c1034bdbc5f5ff843de95bfd4b3)
+        ;
+
+        
+    
+    
+            marker_1a02cbb5e44954206e051dd389c275d8.bindTooltip(
+                `<div>
+                     Click for Hospital Name
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var marker_53415271d0874ffb1fe948909b51fc33 = L.marker(
+                [18.5684211, 73.8797365],
+                {
+}
+            ).addTo(map_435f88cf2e6292837605a47699ac84e9);
+        
+    
+            var icon_5c94964c0f45dd81677dabed10e53cd8 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "red",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+            marker_53415271d0874ffb1fe948909b51fc33.setIcon(icon_5c94964c0f45dd81677dabed10e53cd8);
+        
+    
+        var popup_1ae58c17dfd824bd784c9a0c573e6a32 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_86bf4edec26df09bd8a050f62407071d = $(`<div id="html_86bf4edec26df09bd8a050f62407071d" style="width: 100.0%; height: 100.0%;">Vinayak Hospital</div>`)[0];
+                popup_1ae58c17dfd824bd784c9a0c573e6a32.setContent(html_86bf4edec26df09bd8a050f62407071d);
+            
+        
+
+        marker_53415271d0874ffb1fe948909b51fc33.bindPopup(popup_1ae58c17dfd824bd784c9a0c573e6a32)
+        ;
+
+        
+    
+    
+            marker_53415271d0874ffb1fe948909b51fc33.bindTooltip(
+                `<div>
+                     Click for Hospital Name
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var marker_db97d3476fd4469e4c885cdd4a65de21 = L.marker(
+                [18.5836745, 73.8846483],
+                {
+}
+            ).addTo(map_435f88cf2e6292837605a47699ac84e9);
+        
+    
+            var icon_7ace7a91de2afeb2099903b3bfcaa83c = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "red",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+            marker_db97d3476fd4469e4c885cdd4a65de21.setIcon(icon_7ace7a91de2afeb2099903b3bfcaa83c);
+        
+    
+        var popup_5d76cece3e7e7f9242c214d5807ecd15 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_71ebbb93f7db77d0e4d4b91a196dc14b = $(`<div id="html_71ebbb93f7db77d0e4d4b91a196dc14b" style="width: 100.0%; height: 100.0%;">Karan Hospital</div>`)[0];
+                popup_5d76cece3e7e7f9242c214d5807ecd15.setContent(html_71ebbb93f7db77d0e4d4b91a196dc14b);
+            
+        
+
+        marker_db97d3476fd4469e4c885cdd4a65de21.bindPopup(popup_5d76cece3e7e7f9242c214d5807ecd15)
+        ;
+
+        
+    
+    
+            marker_db97d3476fd4469e4c885cdd4a65de21.bindTooltip(
+                `<div>
+                     Click for Hospital Name
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var marker_302f42c335227978b6c42fae39cf8f86 = L.marker(
+                [18.6001094, 73.9096618],
+                {
+}
+            ).addTo(map_435f88cf2e6292837605a47699ac84e9);
+        
+    
+            var icon_b071666550ba593b7abdd36cf48c2fce = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "red",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+            marker_302f42c335227978b6c42fae39cf8f86.setIcon(icon_b071666550ba593b7abdd36cf48c2fce);
+        
+    
+        var popup_b17336c3ddfcf2dfa15f0ee1f1c99061 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_73b5ea0e9942c6a1663a2f16918bcea6 = $(`<div id="html_73b5ea0e9942c6a1663a2f16918bcea6" style="width: 100.0%; height: 100.0%;">Sai Shradha Health Care Centre</div>`)[0];
+                popup_b17336c3ddfcf2dfa15f0ee1f1c99061.setContent(html_73b5ea0e9942c6a1663a2f16918bcea6);
+            
+        
+
+        marker_302f42c335227978b6c42fae39cf8f86.bindPopup(popup_b17336c3ddfcf2dfa15f0ee1f1c99061)
+        ;
+
+        
+    
+    
+            marker_302f42c335227978b6c42fae39cf8f86.bindTooltip(
+                `<div>
+                     Click for Hospital Name
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var marker_6ddc2e50d1e35a63894d55a8599cae80 = L.marker(
+                [18.597536, 73.9088733],
+                {
+}
+            ).addTo(map_435f88cf2e6292837605a47699ac84e9);
+        
+    
+            var icon_2a030eba9171c99701cb0f32b709ba3f = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "red",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+            marker_6ddc2e50d1e35a63894d55a8599cae80.setIcon(icon_2a030eba9171c99701cb0f32b709ba3f);
+        
+    
+        var popup_2d43cff2599999f993bb4533c9a80514 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_592882d40c68143236166bff43a44514 = $(`<div id="html_592882d40c68143236166bff43a44514" style="width: 100.0%; height: 100.0%;">Om Childrens Clinic</div>`)[0];
+                popup_2d43cff2599999f993bb4533c9a80514.setContent(html_592882d40c68143236166bff43a44514);
+            
+        
+
+        marker_6ddc2e50d1e35a63894d55a8599cae80.bindPopup(popup_2d43cff2599999f993bb4533c9a80514)
+        ;
+
+        
+    
+    
+            marker_6ddc2e50d1e35a63894d55a8599cae80.bindTooltip(
+                `<div>
+                     Click for Hospital Name
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var marker_3b2ab3e1cd079e7bbb140d7f3779e52a = L.marker(
+                [18.5644671, 73.9139265],
+                {
+}
+            ).addTo(map_435f88cf2e6292837605a47699ac84e9);
+        
+    
+            var icon_a4f5bb7fca4b0299547f7b05d814902b = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "red",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+            marker_3b2ab3e1cd079e7bbb140d7f3779e52a.setIcon(icon_a4f5bb7fca4b0299547f7b05d814902b);
+        
+    
+        var popup_fe72f11204a4cb96b9af021816198693 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_e83c85d30390a5c59478749fadb2f38b = $(`<div id="html_e83c85d30390a5c59478749fadb2f38b" style="width: 100.0%; height: 100.0%;">apollo clinic</div>`)[0];
+                popup_fe72f11204a4cb96b9af021816198693.setContent(html_e83c85d30390a5c59478749fadb2f38b);
+            
+        
+
+        marker_3b2ab3e1cd079e7bbb140d7f3779e52a.bindPopup(popup_fe72f11204a4cb96b9af021816198693)
+        ;
+
+        
+    
+    
+            marker_3b2ab3e1cd079e7bbb140d7f3779e52a.bindTooltip(
+                `<div>
+                     Click for Hospital Name
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var marker_9d468f7eda7a981cb7def24a4b705d2e = L.marker(
+                [18.5875992, 73.8871753],
+                {
+}
+            ).addTo(map_435f88cf2e6292837605a47699ac84e9);
+        
+    
+            var icon_3a8ee6322c429b1b9ce8051c1a8b77fe = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "red",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+            marker_9d468f7eda7a981cb7def24a4b705d2e.setIcon(icon_3a8ee6322c429b1b9ce8051c1a8b77fe);
+        
+    
+        var popup_921970293d7186447e6661bd2c1a2a73 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_788672803c70c95d68504af4f6061c86 = $(`<div id="html_788672803c70c95d68504af4f6061c86" style="width: 100.0%; height: 100.0%;">Vaibhav Nursing Home</div>`)[0];
+                popup_921970293d7186447e6661bd2c1a2a73.setContent(html_788672803c70c95d68504af4f6061c86);
+            
+        
+
+        marker_9d468f7eda7a981cb7def24a4b705d2e.bindPopup(popup_921970293d7186447e6661bd2c1a2a73)
+        ;
+
+        
+    
+    
+            marker_9d468f7eda7a981cb7def24a4b705d2e.bindTooltip(
+                `<div>
+                     Click for Hospital Name
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var marker_9f1dccef8adaeb77d35dc2d578ea7fcf = L.marker(
+                [18.5755375, 73.9069211],
+                {
+}
+            ).addTo(map_435f88cf2e6292837605a47699ac84e9);
+        
+    
+            var icon_046b71f1cb169779f80dd9940bbf9f85 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "red",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+            marker_9f1dccef8adaeb77d35dc2d578ea7fcf.setIcon(icon_046b71f1cb169779f80dd9940bbf9f85);
+        
+    
+        var popup_ed5c8882e13e3236ded43a42cb06789f = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_971d9fa9c307d415c3095ae50957fef5 = $(`<div id="html_971d9fa9c307d415c3095ae50957fef5" style="width: 100.0%; height: 100.0%;">White Shine Multispeciality Dental Clinic</div>`)[0];
+                popup_ed5c8882e13e3236ded43a42cb06789f.setContent(html_971d9fa9c307d415c3095ae50957fef5);
+            
+        
+
+        marker_9f1dccef8adaeb77d35dc2d578ea7fcf.bindPopup(popup_ed5c8882e13e3236ded43a42cb06789f)
+        ;
+
+        
+    
+    
+            marker_9f1dccef8adaeb77d35dc2d578ea7fcf.bindTooltip(
+                `<div>
+                     Click for Hospital Name
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var marker_cd024a1c7c9e401b78b3721e7cd1fc55 = L.marker(
+                [18.5725172, 73.8775563],
+                {
+}
+            ).addTo(map_435f88cf2e6292837605a47699ac84e9);
+        
+    
+            var icon_b3ce44cc427e7a65fb59fdf14fd0be01 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "red",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+            marker_cd024a1c7c9e401b78b3721e7cd1fc55.setIcon(icon_b3ce44cc427e7a65fb59fdf14fd0be01);
+        
+    
+        var popup_b333a00dbf1aeda0f2ade5937162574c = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_abd0b342692dcd84c00308a14c2d9260 = $(`<div id="html_abd0b342692dcd84c00308a14c2d9260" style="width: 100.0%; height: 100.0%;">Unknown Hospital</div>`)[0];
+                popup_b333a00dbf1aeda0f2ade5937162574c.setContent(html_abd0b342692dcd84c00308a14c2d9260);
+            
+        
+
+        marker_cd024a1c7c9e401b78b3721e7cd1fc55.bindPopup(popup_b333a00dbf1aeda0f2ade5937162574c)
+        ;
+
+        
+    
+    
+            marker_cd024a1c7c9e401b78b3721e7cd1fc55.bindTooltip(
+                `<div>
+                     Click for Hospital Name
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var marker_5d9ae7ded44e31a06d65552ad8dee8d6 = L.marker(
+                [18.5899062, 73.863388],
+                {
+}
+            ).addTo(map_435f88cf2e6292837605a47699ac84e9);
+        
+    
+            var icon_2367fa22794222864ccf419fa34e7c25 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "red",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+            marker_5d9ae7ded44e31a06d65552ad8dee8d6.setIcon(icon_2367fa22794222864ccf419fa34e7c25);
+        
+    
+        var popup_2ee9cf55102c299b000f931a9958a0e2 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_0ffcb29856d31ffb4f37080a1d2e96a1 = $(`<div id="html_0ffcb29856d31ffb4f37080a1d2e96a1" style="width: 100.0%; height: 100.0%;">Ruby Hospital</div>`)[0];
+                popup_2ee9cf55102c299b000f931a9958a0e2.setContent(html_0ffcb29856d31ffb4f37080a1d2e96a1);
+            
+        
+
+        marker_5d9ae7ded44e31a06d65552ad8dee8d6.bindPopup(popup_2ee9cf55102c299b000f931a9958a0e2)
+        ;
+
+        
+    
+    
+            marker_5d9ae7ded44e31a06d65552ad8dee8d6.bindTooltip(
+                `<div>
+                     Click for Hospital Name
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+</script>
+</html>
