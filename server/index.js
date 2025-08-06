@@ -10,10 +10,9 @@ import { PatientModel, ChatHistoryModel, DoctorModel } from "./models.js";
 import multer from "multer";
 import { v4 as uuidv4 } from "uuid";
 import path from "path";
-import fs from "fs"; // Add filesystem module
+import fs from "fs"; 
 import nodemailer from 'nodemailer';
 import compression from 'compression';
-// ...
 
 dotenv.config();
 

@@ -1,0 +1,49 @@
+# This file should be in the root of your project.
+version: '3.8'
+
+services:
+  # 1. Frontend Service (React + Nginx)
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile # Uses the Dockerfile in the root directory
+    ports:
+      # Exposes the website on port 80 of your machine
+      - "80:80"
+    restart: unless-stopped
+
+  # 2. Backend Node.js API Service
+  api:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    command: node index.js
+    ports:
+      - "3001:3001"
+    env_file:
+      - ./server/.env
+    restart: unless-stopped
+
+  # 3. Backend OCR Service (Python)
+  ocr:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    command: uvicorn ocr:app --host 0.0.0.0 --port 5000
+    ports:
+      - "5000:5000"
+    env_file:
+      - ./server/.env
+    restart: unless-stopped
+
+  # 4. Backend Chatbot Service (Python)
+  chatbot:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    command: uvicorn chatBot:app --host 0.0.0.0 --port 8000
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./server/.env
+    restart: unless-stopped

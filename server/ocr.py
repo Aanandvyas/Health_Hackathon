@@ -2,10 +2,9 @@ import os
 import time
 from typing import Optional
 from io import BytesIO
-
 from fastapi import FastAPI, HTTPException, File, UploadFile, Form
 from fastapi.middleware.cors import CORSMiddleware
-from starlette.concurrency import run_in_threadpool # Import this
+from starlette.concurrency import run_in_threadpool 
 from dotenv import load_dotenv
 import google.generativeai as genai
 from PIL import Image
