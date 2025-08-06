@@ -16,12 +16,12 @@ COPY requirements.txt ./
 # Install Node.js dependencies
 RUN npm install
 
-# Install Python dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+# Install Python dependencies, adding the --break-system-packages flag
+RUN pip install --no-cache-dir -r requirements.txt --break-system-packages
 
 # Copy the rest of your server's source code
 COPY . .
 
-# The CMD here is just a default. 
+# Note: The CMD here is just a default.
 # The docker-compose.yml file will override it for each service.
 CMD [ "node", "index.js" ]
