@@ -1,26 +1,26 @@
-import neurology from '@/assets/Images/Icons/Neurology.png';
-import cardiology from '@/assets/Images/Icons/Cardiology.png';
-import orthopedics from '@/assets/Images/Icons/Orthopoedics.png';
-import surgery from '@/assets/Images/Icons/Surgery.png';
-import dentistry from '@/assets/Images/Icons/Dentistry.png';
-import radiology from '@/assets/Images/Icons/Radiology.png';
-import urology from '@/assets/Images/Icons/Urology.png';
-import medicine from '@/assets/Images/Icons/Medicine.png';
-import seeMoreImage from '@/assets/Images/Icons/seeMoreImage.png';
+import neurology from '@/assets/images/icons/neurology.png';
+import cardiology from '@/assets/images/icons/cardiology.png';
+import orthopedics from '@/assets/images/icons/orthopoedics.png';
+import surgery from '@/assets/images/icons/surgery.png';
+import dentistry from '@/assets/images/icons/dentistry.png';
+import radiology from '@/assets/images/icons/radiology.png';
+import urology from '@/assets/images/icons/urology.png';
+import medicine from '@/assets/images/icons/medicine.png';
+import seeMoreImage from '@/assets/images/icons/seemoreimage.png';
 
-import Banner1 from '@/assets/Images/Banner1.png';
-import Banner2 from '@/assets/Images/Banner2.png';
+import Banner1 from '@/assets/images/banner1.png';
+import Banner2 from '@/assets/images/banner2.png';
 
-import doc1 from '@/assets/Images/Doctors/doc1.png';
-import doc2 from '@/assets/Images/Doctors/doc2.png';
-import doc3 from '@/assets/Images/Doctors/doc3.png';
-import doc4 from '@/assets/Images/Doctors/doc4.png';
+import doc1 from '@/assets/images/doctors/doc1.png';
+import doc2 from '@/assets/images/doctors/doc2.png';
+import doc3 from '@/assets/images/doctors/doc3.png';
+import doc4 from '@/assets/images/doctors/doc4.png';
 
-import user1 from '@/assets/Images/users/user1.jpg';
-import user2 from '@/assets/Images/users/user2.jpg';
-import user3 from '@/assets/Images/users/user3.jpg';
+import user1 from '@/assets/images/users/user1.jpg';
+import user2 from '@/assets/images/users/user2.jpg';
+import user3 from '@/assets/images/users/user3.jpg';
 
-import logo from '@/assets/Images/logo.png';
+import logo from '@/assets/images/logo.png';
 
 export const links = ['Home'];
 
