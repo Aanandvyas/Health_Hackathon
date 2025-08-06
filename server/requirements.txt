@@ -7,3 +7,4 @@ uvicorn
 python-multipart
 flask
 flask_cors
+pillow
