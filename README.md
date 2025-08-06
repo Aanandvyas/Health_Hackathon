@@ -6,7 +6,7 @@ This document provides instructions for setting up and running the Health-Menta 
 
 - [Node.js](https://nodejs.org/) (v18 or later recommended)
 - [npm](https://www.npmjs.com/)
-- [Python](https://www.python.org/) (for the Chatbot and OCR services)
+- [Python v3.11](https://www.python.org/) (for the Chatbot and OCR services) 
 - A Python virtual environment (`venv`) set up within the `server` directory.
 
 ---
