@@ -1,140 +1,134 @@
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/20/solid';
-import { SelectedPage } from '@/Components/Shared/Types';
-import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { useState, useEffect, Dispatch, SetStateAction } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import useMediaQuery from '@/Hooks/useMediaQuery';
-import { useNavigate } from "react-router-dom";
+import { SelectedPage } from '@/Components/Shared/Types'; // Assuming this path is correct
+import Button from '../UI/Button'; // Assuming this path is correct
 
-
-
-// import Links from './Links';
-import Button from '../UI/Button';
-
-type Props = {
-  flexBetween: string;
+// Helper NavLink component to reduce repetition
+type NavLinkProps = {
+  page: string;
+  to: string;
   selectedPage: SelectedPage;
-  setSelectedPage: (value: SelectedPage) => void;
+  setSelectedPage: Dispatch<SetStateAction<SelectedPage>>;
+  closeMobileMenu?: () => void; // Optional: Function to close mobile menu
+};
+
+const NavLink = ({ page, to, selectedPage, setSelectedPage, closeMobileMenu }: NavLinkProps) => {
+  // Normalize page name to match the enum format (e.g., "About Us" -> "aboutus")
+  const lowerCasePage = page.toLowerCase().replace(/ /g, "") as SelectedPage;
+  
+  const baseStyles = "text-lg font-bold text-primary hover:text-green-500 transition duration-300";
+  const activeStyles = "text-green-500"; // Style for the active link
+
+  return (
+    <Link
+      to={to}
+      className={`${baseStyles} ${selectedPage === lowerCasePage ? activeStyles : ""}`}
+      onClick={() => {
+        setSelectedPage(lowerCasePage);
+        if (closeMobileMenu) {
+            closeMobileMenu();
+        }
+      }}
+    >
+      {page}
+    </Link>
+  );
 };
 
 
-  const NavBar = ({ flexBetween }: { flexBetween: string }) => {
+// Main NavBar component
+type Props = {
+  flexBetween: string;
+  selectedPage: SelectedPage;
+  setSelectedPage: Dispatch<SetStateAction<SelectedPage>>;
+};
+
+const NavBar = ({ flexBetween, selectedPage, setSelectedPage }: Props) => {
   const navigate = useNavigate();
-    const [isMenuToggled, setIsMenuToggled] = useState(false);
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const isAboveMediumScreens = useMediaQuery('(min-width: 900px)');
-  
-    useEffect(() => {
-      const user = localStorage.getItem("user");
-      setIsLoggedIn(!!user);
-    }, []);
+  const [isMenuToggled, setIsMenuToggled] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const isAboveMediumScreens = useMediaQuery('(min-width: 900px)');
+
+  useEffect(() => {
+    const user = localStorage.getItem("user");
+    setIsLoggedIn(!!user);
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
+    setIsLoggedIn(false);
+    navigate("/Health-Menta/login");
+  };
+
   return (
     <nav>
-      {/* Desktop Menu */}
-      {isAboveMediumScreens && (
-        <div className={`${flexBetween} lg:gap-28 gap-20`}>
-          <div className={`${flexBetween} gap-16`}>
-            {/* <Links selectedPage={selectedPage} setSelectedPage={setSelectedPage} /> */}
-
-            <button
-              className="text-lg font-bold text-primary hover:text-[#2b7dad] transition duration-500"
-            >
-              <Link to="/Health-Menta">Home</Link>
-            </button>
-            <button
-              className="text-lg font-bold text-primary hover:text-[#2b7dad] transition duration-500"
-            ><Link to="/Health-Menta/about">About</Link>
-            </button>
-
+      {/* ================== DESKTOP NAV ================== */}
+      {isAboveMediumScreens ? (
+        <div className={`${flexBetween} w-full gap-5 `}>
+          <div className={`${flexBetween} gap-10`}>
+            {/* Using the new NavLink component */}
+            <NavLink page="Home" to="/Health-Menta" selectedPage={selectedPage} setSelectedPage={setSelectedPage} />
+            <NavLink page="About" to="/Health-Menta/about" selectedPage={selectedPage} setSelectedPage={setSelectedPage} />
             {isLoggedIn && (
-            <>
-            <button
-              className="text-lg font-bold text-primary hover:text-[#2b7dad] transition duration-500"
-            >
-              <Link to="/Health-Menta/doctors">Doctors</Link>
-            </button>
-            <button
-              className="text-lg font-bold text-primary hover:text-[#2b7dad] transition duration-500"
-            >
-              <Link to="/Health-Menta/services">Services</Link>
-            </button>
-            </>
-          )}
-
+              <>
+                <NavLink page="Doctors" to="/Health-Menta/doctors" selectedPage={selectedPage} setSelectedPage={setSelectedPage} />
+                <NavLink page="Services" to="/Health-Menta/services" selectedPage={selectedPage} setSelectedPage={setSelectedPage} />
+              </>
+            )}
           </div>
-          {!isLoggedIn ? (
-          <Button onClick={() => navigate("/Health-Menta/login")}>
-            Login
-          </Button>
-        ) : (
-          <button onClick={() => {
-            localStorage.removeItem("user");
-            localStorage.removeItem("token");
-            window.location.reload();
-          }}>
-            <Link to="/Health-Menta/login">Logout</Link>
-          </button>
-        )}
-        </div>
-      )}
 
-      {/* Mobile Menu Toggle Button */}
-      {!isAboveMediumScreens && (
-        <button onClick={() => setIsMenuToggled((prev) => !prev)}>
-          <Bars3Icon className="h-8 w-8" />
+          <div className={`${flexBetween} gap-10`}>
+            {!isLoggedIn ? (
+              <Button onClick={() => navigate("/Health-Menta/login")}>Login</Button>
+            ) : (
+              <Button onClick={handleLogout}>Logout</Button>
+            )}
+          </div>
+        </div>
+      ) : (
+        <button className="rounded-full bg-green-500 p-2" onClick={() => setIsMenuToggled(true)}>
+          <Bars3Icon className="h-6 w-6 text-white" />
         </button>
       )}
 
-      {/* Mobile Menu Modal */}
+      {/* ================== MOBILE MENU MODAL ================== */}
       {!isAboveMediumScreens && isMenuToggled && (
-        <div className="fixed right-0 top-0 z-40 h-80 rounded-es-3xl w-[175px] md:w-[300px] bg-secondary drop-shadow-2xl">
-          {/* Close Button */}
-          <div className="flex justify-end p-5 md:pr-16 sm:pt-10">
-            <button onClick={() => setIsMenuToggled((prev) => !prev)}>
-              <XMarkIcon className="h-10 w-10" />
+        <div className="fixed right-0 top-0 z-40 h-full w-[300px] bg-white drop-shadow-xl">
+          <div className="flex justify-end p-12">
+            <button onClick={() => setIsMenuToggled(false)}>
+              <XMarkIcon className="h-6 w-6 text-gray-400" />
             </button>
           </div>
 
-          {/* Mobile Menu Items */}
-          <div className="ml-[20%] flex flex-col items-start gap-5 text-2xl">
-            <button
-              className="text-lg font-bold text-primary hover:text-[#2b7dad] transition duration-500"
-            >
-              <Link to="/Health-Menta">Home</Link>
-            </button>
-            <button
-              className="text-lg font-bold text-primary hover:text-[#2b7dad] transition duration-500">
-              <Link to="/Health-Menta/about">About</Link>
-            </button>
-
-
+          <div className="ml-[33%] flex flex-col gap-10 text-2xl">
+            <NavLink page="Home" to="/Health-Menta" selectedPage={selectedPage} setSelectedPage={setSelectedPage} closeMobileMenu={() => setIsMenuToggled(false)} />
+            <NavLink page="About" to="/Health-Menta/about" selectedPage={selectedPage} setSelectedPage={setSelectedPage} closeMobileMenu={() => setIsMenuToggled(false)} />
             {isLoggedIn && (
-            <>
-            <button
-              className="text-lg font-bold text-primary hover:text-[#2b7dad] transition duration-500">
-              <Link to="/Health-Menta/doctors">Doctors</Link>
-            </button>
-
-            <button
-              className="text-lg font-bold text-primary hover:text-[#2b7dad] transition duration-500">
-              <Link to="/Health-Menta/services">Services</Link>
-            </button>
-            </>
-          )}
-          {!isLoggedIn ? (
-          <button 
-          className="text-lg font-bold text-primary hover:text-[#2b7dad] transition duration-500">
-            <Link to="/Health-Menta/login">Login</Link>
-          </button>
-        ) : (
-          <button
-          className="text-lg font-bold text-primary hover:text-[#2b7dad] transition duration-500" 
-          onClick={() => {
-            localStorage.removeItem("user");
-            window.location.reload();
-          }}>
-            Logout
-          </button>
-        )}
+              <>
+                <NavLink page="Doctors" to="/Health-Menta/doctors" selectedPage={selectedPage} setSelectedPage={setSelectedPage} closeMobileMenu={() => setIsMenuToggled(false)} />
+                <NavLink page="Services" to="/Health-Menta/services" selectedPage={selectedPage} setSelectedPage={setSelectedPage} closeMobileMenu={() => setIsMenuToggled(false)} />
+              </>
+            )}
+            <div className="mt-8 ">
+             {!isLoggedIn ? (
+                <Button onClick={() => {
+                  navigate("/Health-Menta/login");
+                  setIsMenuToggled(false);
+                }}>
+                  Login
+                </Button>
+              ) : (
+                <Button onClick={() => {
+                  handleLogout();
+                  setIsMenuToggled(false);
+                }}>
+                  Logout
+                </Button>
+              )}
+            </div>
           </div>
         </div>
       )}

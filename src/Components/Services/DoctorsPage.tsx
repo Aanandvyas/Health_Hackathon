@@ -49,8 +49,7 @@ const DoctorsPage: React.FC = () => {
         const response = await axios.get("http://localhost:3001/api/appointments", {
           headers: { Authorization: `Bearer ${token}` },
         });
-        console.log("Response data:", response.data);
-       
+               
         let appointmentsArray: any[] = [];
         if (Array.isArray(response.data)) {
           appointmentsArray = response.data;
@@ -124,9 +123,7 @@ const DoctorsPage: React.FC = () => {
       return;
     }
   
-    try {
-      console.log("Cancelling appointment with ID:", appointmentId); // Log the ID for debugging
-  
+    try {  
       const response = await axios.delete(`http://localhost:3001/api/appointments/${appointmentId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });

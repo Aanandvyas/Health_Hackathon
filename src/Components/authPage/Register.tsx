@@ -4,7 +4,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 
 const Register = () => {
-  const [mobileNumber, setMobileNumber] = useState("");
+  const [email, setEmail] = useState(""); // Changed from mobileNumber
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [age, setAge] = useState("");
@@ -12,44 +12,39 @@ const Register = () => {
   const [medicalHistory, setMedicalHistory] = useState("");
   const [height, setHeight] = useState("");
   const [weight, setWeight] = useState("");
-  const [error, setError] = useState(""); // State to store error messages
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     axios.post("http://localhost:3001/register", {
-      mobile_number: mobileNumber, // Make sure the key matches the backend expectation
+      email: email, // Changed from mobile_number
       password,
       name,
       age,
       sex,
-      medical_history: medicalHistory,
+      medical_history: medicalHistory.split(',').map(item => item.trim()), // Send as an array
       height,
       weight,
     })
-
-      .then((res) => {
-        if (res.data === "User already exists") {
-          setError("User with this mobile number already exists."); // Specific error for existing user
+    .then((loginRes) => {
+        if (loginRes.data.message === "Login successful" && loginRes.data.user) {
+            localStorage.setItem("user", JSON.stringify(loginRes.data.user));
+            localStorage.setItem("token", loginRes.data.token);
+            navigate("/Health-Menta");
+            window.location.reload();
         } else {
-          navigate("/Health-Menta/"); // Navigate on success
+            setError("Registration successful, but auto-login failed.");
         }
-      })
-      .catch((err) => {
-        // More detailed error handling
-        if (err.response) {
-          // The request was made and the server responded with a status code
-          // that falls out of the range of 2xx
-          setError(`Failed to register: ${err.response.data.message || err.response.statusText}`);
-        } else if (err.request) {
-          // The request was made but no response was received
-          setError("No response from the server. Check your network connection.");
-        } else {
-          // Something happened in setting up the request that triggered an Error
-          setError("Error setting up your registration request.");
-        }
-        console.error("Registration error:", err);
-      });
+    })
+    .catch((err) => {
+      if (err.response) {
+        setError(`Failed to register: ${err.response.data.message || err.response.statusText}`);
+      } else {
+        setError("Error setting up your registration request.");
+      }
+      console.error("Registration error:", err);
+    });
   };
 
   return (
@@ -57,9 +52,8 @@ const Register = () => {
       <div className="bg-blue-600 p-10 rounded-2xl shadow-lg text-center w-96">
         <h2 className="text-white text-2xl font-semibold">Health Mentá</h2>
         <form onSubmit={handleSubmit} className="mt-6">
-          {/* Error Display */}
           {error && (
-            <div className="mb-4 text-sm text-red-600">
+            <div className="mb-4 text-sm font-bold text-red-300 bg-red-800 p-2 rounded">
               {error}
             </div>
           )}
@@ -78,17 +72,17 @@ const Register = () => {
             />
           </div>
 
-          {/* Mobile Number */}
+          {/* Email Address */}
           <div className="mb-4 text-left">
-            <label className="block text-white font-bold">Mobile Number</label>
+            <label className="block text-white font-bold">Email Address</label>
             <input
-              type="tel"
-              name="mobileNumber"
-              placeholder="Enter Mobile Number"
+              type="email"
+              name="email"
+              placeholder="Enter Email Address"
               required
               className="w-full mt-2 p-2 border border-white bg-white rounded-md text-black"
-              onChange={(e) => setMobileNumber(e.target.value)}
-              value={mobileNumber}
+              onChange={(e) => setEmail(e.target.value)}
+              value={email}
             />
           </div>
 
@@ -113,7 +107,7 @@ const Register = () => {
               <input
                 type="number"
                 name="age"
-                placeholder="Enter Age"
+                placeholder="Age"
                 min="1"
                 required
                 className="w-full mt-2 p-2 border border-white bg-white rounded-md text-black"
@@ -145,7 +139,7 @@ const Register = () => {
               <input
                 type="number"
                 name="height"
-                placeholder="Enter Height"
+                placeholder="Height"
                 min="0"
                 required
                 className="w-full mt-2 p-2 border border-white bg-white rounded-md text-black"
@@ -158,7 +152,7 @@ const Register = () => {
               <input
                 type="number"
                 name="weight"
-                placeholder="Enter Weight"
+                placeholder="Weight"
                 min="0"
                 required
                 className="w-full mt-2 p-2 border border-white bg-white rounded-md text-black"
@@ -173,7 +167,7 @@ const Register = () => {
             <label className="block text-white font-bold">Medical History</label>
             <textarea
               name="medicalHistory"
-              placeholder="Like allergies, chronic diseases, etc."
+              placeholder="e.g., allergies, chronic diseases"
               rows={2}
               className="w-full mt-2 p-2 border border-white bg-white rounded-md text-black"
               onChange={(e) => setMedicalHistory(e.target.value)}

@@ -12,13 +12,22 @@ const PatientSchema = new mongoose.Schema({
   },
   height: { type: Number, required: true },
   weight: { type: Number, required: true },
-  mobile_number: { 
-    type: String, 
-    unique: true, 
-    required: true, 
-    index: true 
+  email: { // 👈 Add this block
+    type: String,
+    required: true,
+    unique: true,
+    lowercase: true,
+    index: true
+  },
+  mobile_number: { // 👈 Make this optional if needed
+    type: String,
+    unique: true,
+    sparse: true, // Allows multiple null values
+    index: true
   },
   password: { type: String, required: true },
+  passwordResetOTP: { type: String },
+  passwordResetExpires: { type: Date },
   medical_history: { type: [String], default: [] },
   appointments: [{
     doctor_id: { 
@@ -41,10 +50,8 @@ const PatientSchema = new mongoose.Schema({
     time: String
   }],
   
-  photo: {type: String},  
-    reports: { type: [String], default: [] }
+  photo: {type: String}
 }, { timestamps: true });
-
 
 
 /* 🔹 Hash password before saving */

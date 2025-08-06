@@ -1,4 +1,3 @@
-import React from "react";
 import { motion } from "framer-motion";
 import Card, { CardContent } from "./card";
 import { FaRobot, FaFileMedical, FaHospital, FaChartBar } from "react-icons/fa";

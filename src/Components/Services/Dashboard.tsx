@@ -12,7 +12,7 @@ const Dashboard: React.FC = () => {
 
   // Reports upload states
   const [selectedReports, setSelectedReports] = useState<File[]>([]);
-  const [reportUrls, setReportUrls] = useState<string[]>([]);
+  const [reports, setReports] = useState<any[]>([]);
   const [uploadError, setUploadError] = useState<string>("");
 
   // Medicine form state
@@ -116,22 +116,14 @@ const Dashboard: React.FC = () => {
           const response = await axios.get("http://localhost:3001/api/get-reports", {
             headers: { Authorization: `Bearer ${token}` },
           });
-          if (response.data && response.data.filenames) {
-            // If you want to include the patient's ID in the URL,
-            // and if your backend stores files in a subfolder named after the ID,
-            // you could modify the URL like so:
-            // const urls = response.data.filenames.map((file: string) => `http://localhost:3001/uploads/${profile?._id}/${file}`);
-            const urls = response.data.filenames.map(
-              (file: string) => `http://localhost:3001/uploads/${file}`
-            );
-            setReportUrls(urls);
+          if (response.data && Array.isArray(response.data)) {
+            setReports(response.data); // Store the full report objects
           }
         }
       } catch (error) {
         console.error("Error fetching reports:", error);
       }
     };
-
     fetchReports();
   }, [token]);
 
@@ -246,6 +238,23 @@ const Dashboard: React.FC = () => {
     }
   };
 
+  const handleReportDelete = async (fileId: string) => {
+    if (!window.confirm("Are you sure you want to delete this report?")) {
+      return;
+    }
+    try {
+      await axios.delete(`http://localhost:3001/api/reports/image/${fileId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      // Remove the deleted report from the state to update the UI instantly
+      setReports(reports.filter(report => report._id !== fileId));
+      alert("Report deleted successfully!");
+    } catch (error) {
+      console.error("Error deleting report:", error);
+      alert("Failed to delete the report.");
+    }
+  };
+
   const handleReportsUpload = async () => {
     if (selectedReports.length === 0) {
       setUploadError("Please select at least one file to upload.");
@@ -272,24 +281,23 @@ const Dashboard: React.FC = () => {
     });
 
     try {
-      const response = await axios.post("http://localhost:3001/api/upload-reports", formData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "multipart/form-data",
-        },
+      // 1. Upload the files
+      await axios.post("http://localhost:3001/api/upload-reports", formData, {
+        headers: { Authorization: `Bearer ${token}` },
       });
 
-      if (response.data && response.data.filenames) {
-        const newUrls = response.data.filenames.map(
-          (filename: string) => `http://localhost:3001/uploads/${filename}`
-        );
-        setReportUrls((prev) => [...prev, ...newUrls]);
-        setUploadError("");
-        alert("Reports uploaded successfully!");
-        setSelectedReports([]);
-      } else {
-        throw new Error("No filenames returned");
-      }
+      // 2. After upload is successful, fetch the complete, updated list of reports
+      const updatedReportsResponse = await axios.get("http://localhost:3001/api/get-reports", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      // 3. Set the state with the fresh data from the server
+      setReports(updatedReportsResponse.data);
+
+      alert("Reports uploaded successfully!");
+      setSelectedReports([]); // Clear the file input
+      setUploadError("");
+
     } catch (error) {
       console.error("Reports upload error:", error);
       setUploadError("Error uploading reports. Please try again.");
@@ -504,17 +512,27 @@ const Dashboard: React.FC = () => {
           Upload Reports
         </button>
         {uploadError && <p className="text-red-500 mt-2">{uploadError}</p>}
-        {reportUrls.length > 0 && (
+        {reports.length > 0 && (
           <div className="mt-4">
             <h3 className="text-lg font-semibold">Uploaded Reports</h3>
             <div className="grid grid-cols-2 gap-4">
-              {reportUrls.map((url, index) => (
-                <img
-                  key={index}
-                  src={url}
-                  alt={`Report ${index + 1}`}
-                  className="w-full h-auto rounded-lg"
-                />
+              {reports.map((report) => (
+                <div key={report._id} className="relative group">
+                  <a href={`http://localhost:3001/api/reports/image/${report.filename}`} target="_blank" rel="noopener noreferrer">
+                    <img
+                      src={`http://localhost:3001/api/reports/image/${report.filename}`}
+                      alt={`Report`}
+                      className="w-full h-auto rounded-lg border group-hover:opacity-70"
+                    />
+                  </a>
+                  <button
+                    onClick={() => handleReportDelete(report._id)}
+                    className="absolute top-1 right-1 bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition-opacity"
+                    title="Delete Report"
+                  >
+                    &times;
+                  </button>
+                </div>
               ))}
             </div>
           </div>

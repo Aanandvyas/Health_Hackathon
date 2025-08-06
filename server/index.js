@@ -3,66 +3,99 @@ import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
 import bcrypt from "bcryptjs";
+import { GridFsStorage } from "multer-gridfs-storage";
+import crypto from "crypto";
 import jwt from "jsonwebtoken";
 import { PatientModel, ChatHistoryModel, DoctorModel } from "./models.js";
 import multer from "multer";
 import { v4 as uuidv4 } from "uuid";
 import path from "path";
 import fs from "fs"; // Add filesystem module
+import nodemailer from 'nodemailer';
+import compression from 'compression';
+// ...
 
 dotenv.config();
 
-const app = express();
-const PORT = 3001;
-
-// Create uploads directory if it doesn't exist
-const uploadDir = path.join(process.cwd(), 'uploads');
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
-}
 
 const MONGO_URI = process.env.MONGO_URI;
 const JWT_SECRET = process.env.JWT_SECRET; 
 
+
+// Create a transporter object using Gmail
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
+});
+
+
+
+const app = express();
+const PORT = 3001;
+
+// --- MIDDLEWARE ---
 app.use(cors());
 app.use(express.json());
-app.use("/uploads", express.static(uploadDir)); // Serve uploaded images
-
-mongoose
-  .connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => console.log("✅ Connected to MongoDB: healthDB"))
-  .catch(err => {
-    console.error("❌ MongoDB connection error:", err);
-    process.exit(1);
-  });
-
-// ✅ Multer Configuration for File Uploads
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, uploadDir),
-  filename: (req, file, cb) => cb(null, uuidv4() + "-" + Date.now() + path.extname(file.originalname)),
-});
+app.use(compression()); 
 
 const fileFilter = (req, file, cb) => {
   const allowedTypes = ["image/jpeg", "image/jpg", "image/png"];
   allowedTypes.includes(file.mimetype) ? cb(null, true) : cb(new Error("Invalid file type"));
 };
 
-const upload = multer({ storage, fileFilter, limits: { fileSize: 1024 * 1024 } }); // 1MB limit
-
-
-dotenv.config();
-
-app.use(express.json());
-app.use(cors());
-
-// ✅ Connect to MongoDB
-mongoose
-  .connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => console.log("✅ Connected to MongoDB: healthDB"))
+// --- MONGODB & GRIDFS SETUP ---
+let gfs;
+mongoose.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(conn => {
+    console.log("✅ Connected to MongoDB: healthDB");
+    gfs = new mongoose.mongo.GridFSBucket(conn.connection.db, {
+      bucketName: 'reports'
+    });
+  })
   .catch(err => {
     console.error("❌ MongoDB connection error:", err);
     process.exit(1);
   });
+
+// --- GRIDFS STORAGE ENGINE ---
+const storage = new GridFsStorage({
+  url: MONGO_URI,
+  file: (req, file) => {
+    return new Promise((resolve, reject) => {
+      crypto.randomBytes(16, (err, buf) => {
+        if (err) {
+          return reject(err);
+        }
+        const filename = buf.toString('hex') + path.extname(file.originalname);
+        const fileInfo = {
+          filename: filename,
+          bucketName: 'reports',
+          metadata: { patientId: req.user.id } // Link file to the patient
+        };
+        resolve(fileInfo);
+      });
+    });
+  }
+});
+
+// --- MULTER CONFIGURATION ---
+const upload = multer({
+  storage,
+  limits: { fileSize: 580 * 1024 }, // 580 KB file size limit
+  fileFilter: (req, file, cb) => {
+    const allowedTypes = /jpeg|jpg|png/;
+    const mimetype = allowedTypes.test(file.mimetype);
+    const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
+    if (mimetype && extname) {
+      return cb(null, true);
+    }
+    cb(new Error("Invalid file type. Only PNG, JPG, or JPEG are allowed."));
+  }
+});
+
 
 // ✅ Middleware to verify JWT
 const authenticateToken = (req, res, next) => {
@@ -115,16 +148,16 @@ app.delete("/api/appointments/:appointmentId", authenticateToken, async (req, re
 // ✅ Register a new user
 app.post("/register", async (req, res) => {
   try {
-    const { mobile_number, password, ...rest } = req.body;
+    const { email, password, ...rest } = req.body;
 
     // Check if user already exists
-    const existingUser = await PatientModel.findOne({ mobile_number });
+    const existingUser = await PatientModel.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ message: "User already exists" });
     }
 
     // Create new user (password hashing is handled in the model)
-    const newUser = new PatientModel({ mobile_number, password, ...rest });
+    const newUser = new PatientModel({email, password, ...rest });
     await newUser.save();
 
     res.status(201).json({ message: "Registration successful", user: newUser });
@@ -137,8 +170,8 @@ app.post("/register", async (req, res) => {
 // ✅ User Login
 app.post("/login", async (req, res) => {
   try {
-    const { mobile_number, password } = req.body;
-    const user = await PatientModel.findOne({ mobile_number });
+    const { email, password }  = req.body;
+    const user = await PatientModel.findOne({ email });
 
     if (!user) return res.status(401).json({ message: "User not found" });
 
@@ -318,38 +351,160 @@ app.put("/api/updateProfile", authenticateToken, async (req, res) => {
   }
 });
 
+
+// ✅ UPLOAD REPORTS
 app.post("/api/upload-reports", authenticateToken, upload.array("reports", 5), async (req, res) => {
   try {
-    const patient = await PatientModel.findById(req.user.id);
-    if (!patient) return res.status(404).json({ message: "User not found" });
-
     if (!req.files || req.files.length === 0) {
       return res.status(400).json({ message: "No files uploaded" });
     }
-
-    // Generate an array of filenames
-    const fileNames = req.files.map((file) => file.filename);
-    patient.reports = [...(patient.reports || []), ...fileNames];
-    await patient.save();
-
-
-    res.status(201).json({ message: "Reports uploaded successfully", filenames: fileNames });
+    const uploadedFiles = req.files.map(file => ({
+      filename: file.filename,
+      id: file.id,
+      contentType: file.contentType,
+    }));
+    res.status(201).json({
+        message: "Reports uploaded successfully",
+        files: uploadedFiles
+    });
   } catch (error) {
     console.error("Upload Error:", error);
-    res.status(500).json({ message: "Error uploading reports" });
+    res.status(500).json({ message: "Error uploading reports", error: error.message });
   }
 });
 
-
+// ✅ GET REPORTS METADATA
 app.get("/api/get-reports", authenticateToken, async (req, res) => {
   try {
-    const patient = await PatientModel.findById(req.user.id);
-    if (!patient || !patient.reports || patient.reports.length === 0) {
-      return res.status(404).json({ message: "No reports found" });
+    if (!gfs) {
+      return res.status(500).json({ message: "GridFS not initialized." });
     }
-    res.json({ filenames: patient.reports });
+    const files = await gfs.find({ 'metadata.patientId': req.user.id }).toArray();
+    if (!files || files.length === 0) {
+      return res.status(200).json([]);
+    }
+    res.json(files);
   } catch (error) {
     console.error("Fetch Error:", error);
     res.status(500).json({ message: "Error fetching reports" });
+  }
+});
+
+// ✅ GET A SPECIFIC REPORT IMAGE
+app.get("/api/reports/image/:filename", async (req, res) => {
+    try {
+        if (!gfs) {
+            return res.status(500).json({ message: "GridFS not initialized." });
+        }
+        const files = await gfs.find({ filename: req.params.filename }).toArray();
+        if (!files || files.length === 0) {
+            return res.status(404).json({ message: 'That file does not exist' });
+        }
+        const readStream = gfs.openDownloadStreamByName(req.params.filename);
+        readStream.pipe(res);
+    } catch (err) {
+        console.error("Image serving error:", err);
+        res.status(500).send('Server Error');
+    }
+});
+
+// ✅ DELETE A SPECIFIC REPORT IMAGE
+app.delete("/api/reports/image/:id", authenticateToken, async (req, res) => {
+  try {
+    if (!gfs) {
+      return res.status(500).json({ message: "GridFS not initialized." });
+    }
+
+    const fileId = new mongoose.Types.ObjectId(req.params.id);
+
+    // Check if the file exists and belongs to the user
+    const files = await gfs.find({ _id: fileId, 'metadata.patientId': req.user.id }).toArray();
+    if (!files || files.length === 0) {
+        return res.status(404).json({ message: 'File not found or you do not have permission to delete it.' });
+    }
+
+    // Delete the file from GridFS
+    await gfs.delete(fileId);
+    
+    res.status(200).json({ message: "File deleted successfully" });
+  } catch (err) {
+    console.error("File deletion error:", err);
+    // Handle cases where the provided ID is not a valid ObjectId
+    if (err.name === 'BSONTypeError') {
+        return res.status(400).json({ message: 'Invalid file ID format.' });
+    }
+    res.status(500).send('Server Error');
+  }
+});
+
+// STEP 1: User requests an OTP via email
+app.post("/forgot-password", async (req, res) => {
+  try {
+    const { email } = req.body;
+    const patient = await PatientModel.findOne({ email });
+
+    if (!patient) {
+      return res.status(404).json({ message: "User with this email not found." });
+    }
+
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    patient.passwordResetOTP = otp;
+    patient.passwordResetExpires = Date.now() + 10 * 60 * 1000; // 10 minutes
+    await patient.save();
+
+    // --- SEND THE EMAIL ---
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: patient.email,
+      subject: 'Your Password Reset OTP for Health Menta',
+      text: `Hello ${patient.name},\n\nYour password reset OTP is: ${otp}\n\nThis code will expire in 10 minutes.\n`
+    };
+
+    await transporter.sendMail(mailOptions);
+
+    res.status(200).json({ message: "OTP sent to your email address." });
+
+  } catch (error) {
+    console.error("Forgot Password Error:", error);
+    res.status(500).json({ message: "Error sending OTP email." });
+  }
+});
+
+/// STEP 2: User submits OTP and new password (with Debugging)
+app.post("/reset-password", async (req, res) => {
+  try {
+    const { email, otp, newPassword } = req.body;
+
+    if (!email || !otp || !newPassword) {
+        return res.status(400).json({ message: "Email, OTP, and new password are required." });
+    }
+
+    const patient = await PatientModel.findOne({ email });
+
+    if (!patient) {
+      console.log("DEBUG: No patient found with that email.");
+      return res.status(400).json({ message: "Invalid OTP or OTP has expired." });
+    }
+
+    
+
+    const isOtpValid = patient.passwordResetOTP === otp.trim(); // Trim whitespace from user input
+    const isOtpExpired = patient.passwordResetExpires < Date.now();
+
+    if (!isOtpValid || isOtpExpired) {
+      console.log("DEBUG: OTP check failed.");
+      return res.status(400).json({ message: "Invalid OTP or OTP has expired." });
+    }
+
+    patient.password = newPassword;
+    patient.passwordResetOTP = undefined;
+    patient.passwordResetExpires = undefined;
+    await patient.save();
+
+    res.status(200).json({ message: "Password has been reset successfully." });
+
+  } catch (error) {
+    console.error("Reset Password Error:", error);
+    res.status(500).json({ message: "Error resetting password." });
   }
 });

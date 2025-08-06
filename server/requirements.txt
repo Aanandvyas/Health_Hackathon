@@ -4,3 +4,9 @@ pydantic
 pymongo
 python-dotenv
 uvicorn
+python-multipart
+flask
+flask_cors
+folium
+pytesseract
+geopy

@@ -8,7 +8,6 @@ const FeedbackDiv = () => {
   };
 
   const submitFeedback = () => {
-    console.log("Feedback submitted:", feedback);
     alert("Thank you for your feedback!");
     setFeedback(""); 
   };

@@ -71,7 +71,7 @@ model = genai.GenerativeModel(
     safety_settings=safety_settings,
     generation_config=generation_config,
     # system_instruction="",
-    system_instruction="Your role is to listen to the user, understand his symptoms, tailor your response according to it, and you must be straightforward and concise about it, also provide quick and simple solutions like first aid or other remedies before asking the patient to consult a doctor.If an image is attached,  respond based on the image provided correctly.Answer in the language that patient is communicating with you.",
+    system_instruction="Your role is to listen to the user, understand his symptoms, tailor your response according to it, and you must be straightforward and concise about it, also provide quick and simple solutions like first aid or other remedies before asking the patient to consult a doctor.If an image is attached,  respond based on the image provided correctly, Answer in the eng language .",
 )
 #API for uploading images
 @app.post("/chat/uploadImage")

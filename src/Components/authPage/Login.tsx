@@ -1,32 +1,33 @@
 import axios from "axios";
 import { useState } from "react";
 import React from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const Login = () => {
-  const [mobileNumber, setMobileNumber] = useState("");
+  const [email, setEmail] = useState(""); // Changed from mobileNumber
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const navigate = useNavigate();
+  // The useNavigate hook was removed as it was causing a crash.
+  // We will use a standard browser redirect instead.
 
   const handleSubmit = (e : React.FormEvent) => {
     e.preventDefault();
 
     axios
       .post("http://localhost:3001/login", {
-        mobile_number: mobileNumber, // ✅ Fixing field name
+        email: email, // Changed from mobile_number
         password,
       })
-// In Login.tsx
       .then((res) => {
-        console.log("Server Response:", res.data);
 
         if (res.data.message === "Login successful" && res.data.user) {
           // Store user data AND token
           localStorage.setItem("user", JSON.stringify(res.data.user));
-          localStorage.setItem("token", res.data.token); // 🚀 Add this line
-          navigate("/Health-Menta");
-          window.location.reload();
+          localStorage.setItem("token", res.data.token);
+          
+          // --- CHANGE: Replaced navigate() with a standard redirect ---
+          // This avoids the hook-related error and achieves the same goal.
+          window.location.href = "/Health-Menta";
         } else {
           setError(res.data.message || "Login failed. Please check your credentials.");
         }
@@ -43,14 +44,14 @@ const Login = () => {
         <h2 className="text-white text-2xl font-semibold">Health Mentá</h2>
         <form onSubmit={handleSubmit} className="mt-6">
           <div className="mb-4 text-left">
-            <label className="block text-white font-bold">Mobile Number</label>
+            <label className="block text-white font-bold">Email Address</label> {/* Changed label */}
             <input
-              type="tel"
-              id="mobile"
-              placeholder="Enter Mobile Number"
-              name="mobile"
+              type="email" // Changed type
+              id="email"
+              placeholder="Enter Email Address"
+              name="email"
               required
-              onChange={(e) => setMobileNumber(e.target.value)}
+              onChange={(e) => setEmail(e.target.value)} // Changed state setter
               className="w-full mt-2 p-2 border border-white bg-white rounded-md text-black"
             />
           </div>
@@ -83,7 +84,7 @@ const Login = () => {
             </span>
           </div>
           <div className="mt-2 text-sm">
-            <Link to="#" className="text-white underline">Forgot Password?</Link>
+            <Link to="/Health-Menta/forgot-password" className="text-white underline">Forgot Password?</Link>
           </div>
         </form>
       </div>
