@@ -6,32 +6,37 @@ FROM node:18-alpine AS build
 
 WORKDIR /app
 
-# Copy ONLY the package files to leverage Docker caching
+# 1. Copy ONLY dependency files first (better layer caching)
 COPY package.json package-lock.json ./
 
-# Install frontend dependencies
-RUN npm install
+# 2. Clean install with frozen lockfile
+RUN npm ci --omit=dev && \
+    npm cache clean --force
 
-# Copy the rest of the source code
+# 3. Copy remaining files (exclude node_modules via .dockerignore)
 COPY . .
 
-# Generate the production build
+# 4. Build with production settings
+ENV NODE_ENV=production
 RUN npm run build
 
 # --- STAGE 2: Serve the App with Nginx ---
 FROM nginx:stable-alpine
 
-# Copy the optimized build output from the 'build' stage
+# 5. Copy built assets
 COPY --from=build /app/dist /usr/share/nginx/html
 
-# Remove the default Nginx configuration file
-RUN rm /etc/nginx/conf.d/default.conf
+# 6. Security hardening
+RUN rm /etc/nginx/conf.d/default.conf && \
+    chown -R nginx:nginx /usr/share/nginx/html && \
+    chmod -R 755 /usr/share/nginx/html
 
-# Copy our custom nginx.conf to the container
+# 7. Optimized Nginx config
 COPY nginx.conf /etc/nginx/conf.d
 
-# Expose port 80 for the Nginx server
-EXPOSE 80
+# 8. Health check
+HEALTHCHECK --interval=30s --timeout=3s \
+    CMD wget -q -O /dev/null http://localhost/ || exit 1
 
-# The command to start the Nginx server
+EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
