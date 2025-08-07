@@ -15,7 +15,7 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
-  base: '/Health-Menta',
+  // The 'base' property has been removed to fix asset loading issues.
   build: {
     rollupOptions: {
       output: {
@@ -32,7 +32,7 @@ export default defineConfig({
               return 'vendor_react-datepicker';
             }
             if (id.includes('react-dom')) {
-                return 'vendor_react-dom';
+              return 'vendor_react-dom';
             }
             // All other libraries from node_modules will be grouped into a single vendor file
             return 'vendor';
