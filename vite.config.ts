@@ -16,6 +16,6 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
-  // This line tells Vite to serve the app from the /Health-Menta/ sub-path
+  // This line tells Vite to build the app for the /Health-Menta/ sub-path
   base: '/Health-Menta',
 });
