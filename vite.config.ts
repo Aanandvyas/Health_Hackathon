@@ -15,7 +15,7 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
-  // The 'base' property has been removed to fix asset loading issues.
+  // The 'base' property has been removed to fix asset loading issues in Docker.
   build: {
     rollupOptions: {
       output: {
