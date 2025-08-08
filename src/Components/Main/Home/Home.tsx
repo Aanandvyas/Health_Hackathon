@@ -18,7 +18,7 @@ const Home = () => {
             Share your medical history securely with doctors and loved ones via
             HealthMentá.ai, Prescription Manager, and Health Centers
           </p>
-          <Button onClick={() => navigate("/Health-Menta/Doctors")}>
+          <Button onClick={() => navigate("/Doctors")}>
             Appointment Now
           </Button>
         </div>

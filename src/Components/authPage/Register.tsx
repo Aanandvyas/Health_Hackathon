@@ -31,7 +31,7 @@ const Register = () => {
         if (loginRes.data.message === "Login successful" && loginRes.data.user) {
             localStorage.setItem("user", JSON.stringify(loginRes.data.user));
             localStorage.setItem("token", loginRes.data.token);
-            navigate("/Health-Menta");
+            navigate("/");
             window.location.reload();
         } else {
             setError("Registration successful, but auto-login failed.");

@@ -48,19 +48,32 @@ type Props = {
 const NavBar = ({ flexBetween, selectedPage, setSelectedPage }: Props) => {
   const navigate = useNavigate();
   const [isMenuToggled, setIsMenuToggled] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  // Initialize state directly from localStorage
+  const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem("user"));
   const isAboveMediumScreens = useMediaQuery('(min-width: 900px)');
 
+  // This effect listens for changes to localStorage from other tabs/pages
   useEffect(() => {
-    const user = localStorage.getItem("user");
-    setIsLoggedIn(!!user);
+    const handleStorageChange = () => {
+      setIsLoggedIn(!!localStorage.getItem("user"));
+    };
+
+    // Add event listener for storage changes
+    window.addEventListener('storage', handleStorageChange);
+
+    // Clean up the listener when the component unmounts
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
   }, []);
 
   const handleLogout = () => {
     localStorage.removeItem("user");
     localStorage.removeItem("token");
     setIsLoggedIn(false);
-    navigate("/Health-Menta/login");
+    // Manually trigger a storage event to update the UI immediately
+    window.dispatchEvent(new Event("storage")); 
+    navigate("/login");
   };
 
   return (
@@ -70,19 +83,19 @@ const NavBar = ({ flexBetween, selectedPage, setSelectedPage }: Props) => {
         <div className={`${flexBetween} w-full gap-5 `}>
           <div className={`${flexBetween} gap-10`}>
             {/* Using the new NavLink component */}
-            <NavLink page="Home" to="/Health-Menta" selectedPage={selectedPage} setSelectedPage={setSelectedPage} />
-            <NavLink page="About" to="/Health-Menta/about" selectedPage={selectedPage} setSelectedPage={setSelectedPage} />
+            <NavLink page="Home" to="/" selectedPage={selectedPage} setSelectedPage={setSelectedPage} />
+            <NavLink page="About" to="/about" selectedPage={selectedPage} setSelectedPage={setSelectedPage} />
             {isLoggedIn && (
               <>
-                <NavLink page="Doctors" to="/Health-Menta/doctors" selectedPage={selectedPage} setSelectedPage={setSelectedPage} />
-                <NavLink page="Services" to="/Health-Menta/services" selectedPage={selectedPage} setSelectedPage={setSelectedPage} />
+                <NavLink page="Doctors" to="/doctors" selectedPage={selectedPage} setSelectedPage={setSelectedPage} />
+                <NavLink page="Services" to="/services" selectedPage={selectedPage} setSelectedPage={setSelectedPage} />
               </>
             )}
           </div>
 
           <div className={`${flexBetween} gap-10`}>
             {!isLoggedIn ? (
-              <Button onClick={() => navigate("/Health-Menta/login")}>Login</Button>
+              <Button onClick={() => navigate("/login")}>Login</Button>
             ) : (
               <Button onClick={handleLogout}>Logout</Button>
             )}
@@ -104,18 +117,18 @@ const NavBar = ({ flexBetween, selectedPage, setSelectedPage }: Props) => {
           </div>
 
           <div className="ml-[33%] flex flex-col gap-10 text-2xl">
-            <NavLink page="Home" to="/Health-Menta" selectedPage={selectedPage} setSelectedPage={setSelectedPage} closeMobileMenu={() => setIsMenuToggled(false)} />
-            <NavLink page="About" to="/Health-Menta/about" selectedPage={selectedPage} setSelectedPage={setSelectedPage} closeMobileMenu={() => setIsMenuToggled(false)} />
+            <NavLink page="Home" to="/" selectedPage={selectedPage} setSelectedPage={setSelectedPage} closeMobileMenu={() => setIsMenuToggled(false)} />
+            <NavLink page="About" to="/about" selectedPage={selectedPage} setSelectedPage={setSelectedPage} closeMobileMenu={() => setIsMenuToggled(false)} />
             {isLoggedIn && (
               <>
-                <NavLink page="Doctors" to="/Health-Menta/doctors" selectedPage={selectedPage} setSelectedPage={setSelectedPage} closeMobileMenu={() => setIsMenuToggled(false)} />
-                <NavLink page="Services" to="/Health-Menta/services" selectedPage={selectedPage} setSelectedPage={setSelectedPage} closeMobileMenu={() => setIsMenuToggled(false)} />
+                <NavLink page="Doctors" to="/doctors" selectedPage={selectedPage} setSelectedPage={setSelectedPage} closeMobileMenu={() => setIsMenuToggled(false)} />
+                <NavLink page="Services" to="/services" selectedPage={selectedPage} setSelectedPage={setSelectedPage} closeMobileMenu={() => setIsMenuToggled(false)} />
               </>
             )}
             <div className="mt-8 ">
-             {!isLoggedIn ? (
+              {!isLoggedIn ? (
                 <Button onClick={() => {
-                  navigate("/Health-Menta/login");
+                  navigate("/login");
                   setIsMenuToggled(false);
                 }}>
                   Login

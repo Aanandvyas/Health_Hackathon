@@ -27,7 +27,7 @@ const Login = () => {
           
           // --- CHANGE: Replaced navigate() with a standard redirect ---
           // This avoids the hook-related error and achieves the same goal.
-          window.location.href = "/Health-Menta";
+          window.location.href = "/";
         } else {
           setError(res.data.message || "Login failed. Please check your credentials.");
         }
@@ -80,11 +80,11 @@ const Login = () => {
           </button>
           <div className="mt-4 text-sm">
             <span className="text-white">
-              Don't have an account? <Link to="/Health-Menta/register" className="underline">Sign up</Link>
+              Don't have an account? <Link to="/register" className="underline">Sign up</Link>
             </span>
           </div>
           <div className="mt-2 text-sm">
-            <Link to="/Health-Menta/forgot-password" className="text-white underline">Forgot Password?</Link>
+            <Link to="/forgot-password" className="text-white underline">Forgot Password?</Link>
           </div>
         </form>
       </div>

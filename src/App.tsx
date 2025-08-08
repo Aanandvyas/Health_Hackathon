@@ -21,13 +21,13 @@ function App() {
         {/* The Suspense component shows a fallback while the lazy components are loading */}
         <Suspense fallback={<PageLoader />}>
           <Routes>
-            <Route path="/Health-Menta/login" element={<Login />} />
-            <Route path="/Health-Menta/register" element={<Register />} />
-            <Route path="/Health-Menta" element={<HomePage />} />
-            <Route path="/Health-Menta/Services" element={<ServicePage />} />
-            <Route path="/Health-Menta/About" element={<Landing />} />
-            <Route path="/Health-Menta/Doctors" element={<DoctorsPage />} />
-            <Route path="/Health-Menta/forgot-password" element={<ForgotPassword />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/" element={<HomePage />} />
+            <Route path="/Services" element={<ServicePage />} />
+            <Route path="/About" element={<Landing />} />
+            <Route path="/Doctors" element={<DoctorsPage />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
           </Routes>
         </Suspense>
       </div>
