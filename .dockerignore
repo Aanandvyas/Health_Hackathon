@@ -1,0 +1,30 @@
+# Ignore dependencies, as they are installed inside the container
+node_modules
+server/node_modules
+server/venv
+
+# Ignore build output
+dist
+
+# Ignore local environment files
+.env
+server/.env
+
+# Ignore Git directory
+.git
+
+# Ignore Docker files
+Dockerfile
+docker-compose.yaml
+
+# Ignore local development logs and caches
+.DS_Store
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm
+.vite
+
+# Ignore IDE and editor folders
+.vscode
+.idea
