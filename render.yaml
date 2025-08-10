@@ -11,11 +11,8 @@ services:
       url: aanand2004/health-hackathon-frontend:latest
     # Health check to make sure the service is running
     healthCheckPath: /
-    # Set up routing for your domain
-    routes:
-      - type: rewrite
-        source: /*
-        destination: /index.html
+    # The 'routes' section has been removed as it's not supported for Docker web services.
+    # Routing is handled by the nginx.conf file inside the Docker container.
 
   # 2. Backend Services (Combined into one Free Tier Private Service)
   - type: pserv # Correct type for a Private Service
@@ -24,17 +21,11 @@ services:
     runtime: docker
     image:
       url: aanand2004/health-hackathon-backend:latest
-    # The 'ports' section has been removed as it is not valid for private services.
-    # Your services will still run on their respective ports inside the container.
     # Securely add your environment variables in the Render dashboard
+    # The 'fromSecret' flag is removed. Render will prompt you for the values.
     envVars:
       - key: MONGO_URI
-        fromSecret: true
       - key: JWT_SECRET
-        fromSecret: true
       - key: EMAIL_USER
-        fromSecret: true
       - key: EMAIL_PASS
-        fromSecret: true
       - key: GEMINI_API_KEY
-        fromSecret: true
