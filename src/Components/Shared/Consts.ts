@@ -1,26 +1,5 @@
-import neurology from '@/assets/images/icons/neurology.png';
-import cardiology from '@/assets/images/icons/cardiology.png';
-import orthopedics from '@/assets/images/icons/orthopoedics.png';
-import surgery from '@/assets/images/icons/surgery.png';
-import dentistry from '@/assets/images/icons/dentistry.png';
-import radiology from '@/assets/images/icons/radiology.png';
-import urology from '@/assets/images/icons/urology.png';
-import medicine from '@/assets/images/icons/medicine.png';
-import seeMoreImage from '@/assets/images/icons/seemoreimage.png';
-
-import Banner1 from '@/assets/images/banner1.png';
-import Banner2 from '@/assets/images/banner2.png';
-
-import doc1 from '@/assets/images/doctors/doc1.png';
-import doc2 from '@/assets/images/doctors/doc2.png';
-import doc3 from '@/assets/images/doctors/doc3.png';
-import doc4 from '@/assets/images/doctors/doc4.png';
-
-import user1 from '@/assets/images/users/user1.jpg';
-import user2 from '@/assets/images/users/user2.jpg';
-import user3 from '@/assets/images/users/user3.jpg';
-
-import logo from '@/assets/images/logo.png';
+// Import the single 'images' object from your new central image index file.
+import { images } from '@/assets/images/index';
 
 export const links = ['Home'];
 
@@ -49,7 +28,7 @@ export const descNums = [
 
 export const ServicesData = [
   {
-    img: neurology,
+    img: images.neurology,
     title: 'Neurology',
     id: 'neurology',
     heading: 'Neurology Department',
@@ -64,7 +43,7 @@ export const ServicesData = [
     ],
   },
   {
-    img: cardiology,
+    img: images.cardiology,
     title: 'Cardiology',
     id: 'cardiology',
     heading: 'Cardiology Department',
@@ -81,7 +60,7 @@ export const ServicesData = [
     ],
   },
   {
-    img: orthopedics,
+    img: images.orthopedics,
     title: 'Orthopedics',
     id: 'orthopedics',
     heading: 'Orthopedics Department',
@@ -96,7 +75,7 @@ export const ServicesData = [
     ],
   },
   {
-    img: surgery,
+    img: images.surgery,
     title: 'Surgery',
     id: 'surgery',
     heading: 'Surgery Department',
@@ -111,7 +90,7 @@ export const ServicesData = [
     ],
   },
   {
-    img: dentistry,
+    img: images.dentistry,
     title: 'Dentistry',
     id: 'dentistry',
     heading: 'Dentistry Department',
@@ -126,7 +105,7 @@ export const ServicesData = [
     ],
   },
   {
-    img: radiology,
+    img: images.radiology,
     title: 'Radiology',
     id: 'radiology',
     heading: 'Radiology Department',
@@ -141,7 +120,7 @@ export const ServicesData = [
     ],
   },
   {
-    img: urology,
+    img: images.urology,
     title: 'Urology',
     id: 'urology',
     heading: 'Urology Department',
@@ -156,7 +135,7 @@ export const ServicesData = [
     ],
   },
   {
-    img: medicine,
+    img: images.medicine,
     title: 'Medicine',
     id: 'medicine',
     heading: 'Medicine Department',
@@ -171,7 +150,7 @@ export const ServicesData = [
     ],
   },
   {
-    img: seeMoreImage,
+    img: images.seeMoreImage,
     title: 'See More',
     id: 'seemore',
     heading: 'Explore Our Services',
@@ -196,55 +175,55 @@ export const Banner1Data = {
     'Discount for all medical treatments',
     'Enrolment is quick and easy',
   ],
-  img: Banner1,
+  img: images.banner1,
 };
 
 export const DoctorsData = {
   heading: 'Meet Our Specialists',
   doctors: [
     {
-      img: doc1,
+      img: images.doc1,
       name: 'Dr. Madhav Mishra',
       job: 'Cardiologist',
     },
     {
-      img: doc2,
+      img: images.doc2,
       name: 'Dr. Mishti Sharma',
       job: 'Dentist',
     },
     {
-      img: doc3,
+      img: images.doc3,
       name: 'Dr. Pankaj Kumar',
       job: 'Surgeon',
     },
     {
-      img: doc4,
+      img: images.doc4,
       name: 'Dr. Ritu Singh',
       job: 'Neurologist',
     },
   ],
   heading2: 'Who Are We?',
   desc: 'A collaborative hospital service website is a digital platform that brings together healthcare professionals, patients and administrators to streamline and enganhe the delivery of healthcare services. This innovative platform allows for seamless communication and coordination among healthcare teams, enabling them to provide more efficient and personalized care to patients.',
-  img: Banner2,
+  img: images.banner2,
 };
 
 export const FeedbackData = {
   heading: 'Patient Feedback',
   feedbacks: [
     {
-      img: user1,
+      img: images.user1,
       name: 'Divya Kriplani ',
       job: 'Works at EY',
       desc: 'My experience with this hospital has been great. I highly recommend their services to anyone in need of quility healthcare. they truly prioritize patients care!',
     },
     {
-      img: user2,
+      img: images.user2,
       name: 'Mayank Kumar',
       job: 'Works at Honeybee',
       desc: 'The healthcare professionals were top-natch. they were knowledgeable, attentive, and took the time to answer all of my questions and address my concerns',
     },
     {
-      img: user3,
+      img: images.user3,
       name: 'Jhalak Sehgal',
       job: 'Phd Scholar',
       desc: "One thing that stood out to me was the efficiency of the service, i didn't have to wait long for my appointment, and the entire process was hassle-free experience",
@@ -253,7 +232,7 @@ export const FeedbackData = {
 };
 
 export const FooterData = {
-  logo: logo,
+  logo: images.logo,
   addresses: ['Vit Bhopal', 'Kothri Kalan'],
   phone: '8516894756',
   departments: [
