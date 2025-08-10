@@ -24,12 +24,8 @@ services:
     runtime: docker
     image:
       url: aanand2004/health-hackathon-backend:latest
-    # Define the ports your backend services listen on
-    # Note: These are not publicly exposed
-    ports:
-      - port: 3001 # For the Node.js API
-      - port: 5000 # For the OCR service
-      - port: 8000 # For the Chatbot service
+    # The 'ports' section has been removed as it is not valid for private services.
+    # Your services will still run on their respective ports inside the container.
     # Securely add your environment variables in the Render dashboard
     envVars:
       - key: MONGO_URI
