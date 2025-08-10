@@ -1,0 +1,100 @@
+# k8s/deployment.yaml
+
+# 1. Frontend Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-deployment
+spec:
+  replicas: 2 # Run 2 instances of the frontend for high availability
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+      - name: frontend
+        image: your-dockerhub-username/health-hackathon-frontend:latest # IMPORTANT: Replace with your image name
+        ports:
+        - containerPort: 80
+
+---
+# 2. Backend API Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: api
+  template:
+    metadata:
+      labels:
+        app: api
+    spec:
+      containers:
+      - name: api
+        image: your-dockerhub-username/health-hackathon-backend:latest # IMPORTANT: Replace with your image name
+        command: ["node", "index.js"]
+        ports:
+        - containerPort: 3001
+        envFrom:
+        - secretRef:
+            name: app-secrets # Load secrets from a K8s Secret
+
+---
+# 3. OCR Service Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ocr-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ocr
+  template:
+    metadata:
+      labels:
+        app: ocr
+    spec:
+      containers:
+      - name: ocr
+        image: your-dockerhub-username/health-hackathon-backend:latest
+        command: ["uvicorn", "ocr:app", "--host", "0.0.0.0", "--port", "5000"]
+        ports:
+        - containerPort: 5000
+        envFrom:
+        - secretRef:
+            name: app-secrets
+
+---
+# 4. Chatbot Service Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chatbot-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: chatbot
+  template:
+    metadata:
+      labels:
+        app: chatbot
+    spec:
+      containers:
+      - name: chatbot
+        image: your-dockerhub-username/health-hackathon-backend:latest
+        command: ["uvicorn", "chatBot:app", "--host", "0.0.0.0", "--port", "8000"]
+        ports:
+        - containerPort: 8000
+        envFrom:
+        - secretRef:
+            name: app-secrets

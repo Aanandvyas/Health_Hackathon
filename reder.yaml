@@ -1,0 +1,64 @@
+# This file tells Render how to deploy all your services.
+# Place this file in the root of your GitHub repository.
+
+services:
+  # 1. Frontend Web Service (Free Tier)
+  - type: web
+    name: health-hackathon-frontend
+    plan: free # Specifies the free instance type
+    runtime: docker
+    # Render will pull the image your GitHub Action pushes to Docker Hub
+    image:
+      url: aanand2004/health-hackathon-frontend:latest
+    # Health check to make sure the service is running
+    healthCheckPath: /
+
+  # 2. Backend API Service (Free Tier)
+  - type: web # Use 'web' for public APIs, 'pivate' for internal
+    name: health-hackathon-api
+    plan: free
+    runtime: docker
+    image:
+      url: aanand2004/health-hackathon-backend:latest
+    # Tell Render which command to run for this specific service
+    dockerCommand: node index.js
+    # Health check for the API
+    healthCheckPath: /metrics
+    # Securely add your environment variables in the Render dashboard
+    envVars:
+      - key: MONGO_URI
+        fromSecret: true
+      - key: JWT_SECRET
+        fromSecret: true
+      - key: EMAIL_USER
+        fromSecret: true
+      - key: EMAIL_PASS
+        fromSecret: true
+
+  # 3. OCR Service (Requires Paid Plan)
+  - type: private
+    name: health-hackathon-ocr
+    plan: starter # 'starter' is Render's paid plan
+    runtime: docker
+    image:
+      url: your-dockerhub-username/health-hackathon-backend:latest
+    dockerCommand: uvicorn ocr:app --host 0.0.0.0 --port 5000
+    envVars:
+      - key: MONGO_URI
+        fromSecret: true
+      - key: GEMINI_API_KEY
+        fromSecret: true
+
+  # 4. Chatbot Service (Requires Paid Plan)
+  - type: private
+    name: health-hackathon-chatbot
+    plan: starter
+    runtime: docker
+    image:
+      url: your-dockerhub-username/health-hackathon-backend:latest
+    dockerCommand: uvicorn chatBot:app --host 0.0.0.0 --port 8000
+    envVars:
+      - key: MONGO_URI
+        fromSecret: true
+      - key: GEMINI_API_KEY
+        fromSecret: true

@@ -1,0 +1,68 @@
+# This workflow builds, pushes, and deploys the application
+
+name: CI/CD Pipeline
+
+# This workflow runs on every push to the 'main' or 'Deploy-Testing' branch
+on:
+  push:
+    branches: [ "main", "Deploy-Testing" ]
+
+jobs:
+  # Job 1: Build and Push Docker Images
+  build-and-push-images:
+    runs-on: ubuntu-latest
+    steps:
+      # Step 1: Check out your repository's code
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Step 2: Log in to Docker Hub
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: aanand2004
+          password: AnanDvyas777
+
+      # Step 3: Build and push the frontend image
+      - name: Build and push frontend image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: aanand2004/health-hackathon-frontend:latest
+
+      # Step 4: Build and push the backend image
+      - name: Build and push backend image
+        uses: docker/build-push-action@v4
+        with:
+          context: ./server
+          file: ./server/Dockerfile
+          push: true
+          tags: aanand2004/health-hackathon-backend:latest
+
+  # Job 2: Deploy to Kubernetes
+  deploy:
+    # This job runs only after the 'build-and-push-images' job is successful
+    needs: build-and-push-images
+    runs-on: ubuntu-latest
+    steps:
+      # Step 1: Check out your repository's code
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Step 2: Set up kubectl context
+      # This action securely configures kubectl to connect to your cloud provider's cluster
+      - name: Set up Kubeconfig
+        uses: azure/k8s-set-context@v3 # Example for Azure, others exist for AWS, GCP
+        with:
+          method: kubeconfig
+          kubeconfig: ${{ secrets.KUBE_CONFIG }} # A secret containing your cluster's config file
+
+      # Step 3: Apply the Kubernetes manifests
+      # This command tells your cluster to update the application based on your YAML files
+      - name: Deploy to Kubernetes
+        run: |
+          kubectl apply -f k8s/secret.yaml
+          kubectl apply -f k8s/deployment.yaml
+          kubectl apply -f k8s/service.yaml
