@@ -11,7 +11,6 @@ services:
       url: aanand2004/health-hackathon-frontend:latest
     # Health check to make sure the service is running
     healthCheckPath: /
-    # The 'routes' section has been removed as it's not supported for Docker web services.
     # Routing is handled by the nginx.conf file inside the Docker container.
 
   # 2. Backend Services (Combined into one Free Tier Private Service)
@@ -21,11 +20,7 @@ services:
     runtime: docker
     image:
       url: aanand2004/health-hackathon-backend:latest
-    # Securely add your environment variables in the Render dashboard
-    # The 'fromSecret' flag is removed. Render will prompt you for the values.
+    # This links the service to a shared group of secrets
+    # that you will create in the Render dashboard.
     envVars:
-      - key: MONGO_URI
-      - key: JWT_SECRET
-      - key: EMAIL_USER
-      - key: EMAIL_PASS
-      - key: GEMINI_API_KEY
+      - fromGroup: health-hackathon-secrets
