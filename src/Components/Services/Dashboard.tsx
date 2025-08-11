@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3001";
+
+
 const Dashboard: React.FC = () => {
   // Common states
   const [tip, setTip] = useState<string>("");
@@ -73,7 +76,7 @@ const Dashboard: React.FC = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const response = await axios.get("http://localhost:3001/api/getPatientId", {
+        const response = await axios.get(`${API_URL}/api/getPatientId`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setProfile(response.data);
@@ -90,12 +93,12 @@ const Dashboard: React.FC = () => {
     const fetchData = async () => {
       try {
         if (token) {
-          const medicinesResponse = await axios.get("http://localhost:3001/medicines", {
+          const medicinesResponse = await axios.get(`${API_URL}/medicines`, {
             headers: { Authorization: `Bearer ${token}` },
           });
           setMedicines(medicinesResponse.data);
 
-          const appointmentsResponse = await axios.get("http://localhost:3001/api/appointments", {
+          const appointmentsResponse = await axios.get(`${API_URL}/api/appointments`, {
             headers: { Authorization: `Bearer ${token}` },
           });
           setAppointments(appointmentsResponse.data);
@@ -113,7 +116,7 @@ const Dashboard: React.FC = () => {
     const fetchReports = async () => {
       try {
         if (token) {
-          const response = await axios.get("http://localhost:3001/api/get-reports", {
+          const response = await axios.get(`${API_URL}/api/get-reports`, {
             headers: { Authorization: `Bearer ${token}` },
           });
           if (response.data && Array.isArray(response.data)) {
@@ -166,7 +169,7 @@ const Dashboard: React.FC = () => {
     e.preventDefault();
     try {
       const response = await axios.put(
-        "http://localhost:3001/api/updateProfile",
+        `${API_URL}/api/updateProfile`,
         editableProfile,
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -187,7 +190,7 @@ const Dashboard: React.FC = () => {
     }
     try {
       const response = await axios.post(
-        "http://localhost:3001/add-medicine",
+        `${API_URL}/add-medicine`,
         newMedicine,
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -204,7 +207,7 @@ const Dashboard: React.FC = () => {
       return;
     }
     try {
-      await axios.delete(`http://localhost:3001/remove-medicine/${medicineId}`, {
+      await axios.delete(`${API_URL}/remove-medicine/${medicineId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setMedicines(medicines.filter((med) => med._id !== medicineId));
@@ -243,7 +246,7 @@ const Dashboard: React.FC = () => {
       return;
     }
     try {
-      await axios.delete(`http://localhost:3001/api/reports/image/${fileId}`, {
+      await axios.delete(`${API_URL}/api/reports/image/${fileId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       // Remove the deleted report from the state to update the UI instantly
@@ -282,12 +285,12 @@ const Dashboard: React.FC = () => {
 
     try {
       // 1. Upload the files
-      await axios.post("http://localhost:3001/api/upload-reports", formData, {
+      await axios.post(`${API_URL}/api/upload-reports`, formData, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
       // 2. After upload is successful, fetch the complete, updated list of reports
-      const updatedReportsResponse = await axios.get("http://localhost:3001/api/get-reports", {
+      const updatedReportsResponse = await axios.get(`${API_URL}/api/get-reports`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -518,9 +521,9 @@ const Dashboard: React.FC = () => {
             <div className="grid grid-cols-2 gap-4">
               {reports.map((report) => (
                 <div key={report._id} className="relative group">
-                  <a href={`http://localhost:3001/api/reports/image/${report.filename}`} target="_blank" rel="noopener noreferrer">
+                  <a href={`${API_URL}/api/reports/image/${report.filename}`} target="_blank" rel="noopener noreferrer">
                     <img
-                      src={`http://localhost:3001/api/reports/image/${report.filename}`}
+                      src={`${API_URL}/api/reports/image/${report.filename}`}
                       alt={`Report`}
                       className="w-full h-auto rounded-lg border group-hover:opacity-70"
                     />

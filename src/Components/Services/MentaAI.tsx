@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { marked } from 'marked';
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3001";
+const CHATBOT_URL = import.meta.env.VITE_CHATBOT_URL || "http://localhost:8000";
 
 const MentaAI: React.FC = () => {
   const [messages, setMessages] = useState<{ user: string; text: string; timestamp: string }[]>([]);
@@ -27,7 +29,7 @@ const MentaAI: React.FC = () => {
         const token = localStorage.getItem('token');
         if (!token) throw new Error('No token found');
   
-        const response = await fetch('http://localhost:3001/api/getPatientId', {
+        const response = await fetch(`${API_URL}/api/getPatientId`, {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -73,7 +75,7 @@ const MentaAI: React.FC = () => {
         formData.append("image", image, image.name);
       }
 
-      const response = await fetch('http://localhost:8000/chat/uploadImage', {
+      const response = await fetch(`${CHATBOT_URL}/chat/uploadImage`, {
         method: 'POST',
         body: formData,
       });

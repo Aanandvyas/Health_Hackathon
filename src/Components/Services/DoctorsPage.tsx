@@ -3,6 +3,9 @@ import axios from "axios";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3001";
+
+
 interface Doctor {
   _id: string;
   name: string;
@@ -37,7 +40,7 @@ const DoctorsPage: React.FC = () => {
   useEffect(() => {
     const fetchDoctors = async () => {
       try {
-        const response = await axios.get("http://localhost:3001/doctors");
+        const response = await axios.get(`${API_URL}/doctors`);
         setDoctors(response.data);
       } catch (error) {
         console.error("Failed to fetch doctors", error);
@@ -46,7 +49,7 @@ const DoctorsPage: React.FC = () => {
 
     const fetchAppointments = async () => {
       try {
-        const response = await axios.get("http://localhost:3001/api/appointments", {
+        const response = await axios.get(`${API_URL}/api/appointments`, {
           headers: { Authorization: `Bearer ${token}` },
         });
                
@@ -86,7 +89,7 @@ const DoctorsPage: React.FC = () => {
   
     try {
       const response = await axios.post(
-        "http://localhost:3001/api/appointments/book",
+        `${API_URL}/api/appointments/book`,
         {
           doctorId: selectedDoctor._id,
           date: selectedDate.toISOString(),
@@ -124,7 +127,7 @@ const DoctorsPage: React.FC = () => {
     }
   
     try {  
-      const response = await axios.delete(`http://localhost:3001/api/appointments/${appointmentId}`, {
+      const response = await axios.delete(`${API_URL}/api/appointments/${appointmentId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
   
