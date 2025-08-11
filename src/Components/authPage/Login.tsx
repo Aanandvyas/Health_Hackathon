@@ -3,6 +3,8 @@ import { useState } from "react";
 import React from "react";
 import { Link } from "react-router-dom";
 
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3001";
+
 const Login = () => {
   const [email, setEmail] = useState(""); // Changed from mobileNumber
   const [password, setPassword] = useState("");
@@ -14,7 +16,7 @@ const Login = () => {
     e.preventDefault();
 
     axios
-      .post("http://localhost:3001/login", {
+      .post(`${API_URL}/login`, {
         email: email, // Changed from mobile_number
         password,
       })

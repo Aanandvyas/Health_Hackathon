@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3001";
+
+
 const ForgotPassword = () => {
   // State to manage which step of the process the user is on
   const [step, setStep] = useState<'request' | 'verify'>('request');
@@ -24,7 +27,7 @@ const ForgotPassword = () => {
 
     try {
       // --- CHANGED: Send email to the backend ---
-      const response = await axios.post('http://localhost:3001/forgot-password', {
+      const response = await axios.post(`${API_URL}/forgot-password`, {
         email: email,
       });
       
@@ -47,7 +50,7 @@ const ForgotPassword = () => {
 
     try {
       // --- CHANGED: Send email to the backend ---
-      const response = await axios.post('http://localhost:3001/reset-password', {
+      const response = await axios.post(`${API_URL}/reset-password`, {
         email: email,
         otp: otp,
         newPassword: newPassword,

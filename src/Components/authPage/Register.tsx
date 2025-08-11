@@ -3,6 +3,9 @@ import { useState } from "react";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3001";
+
+
 const Register = () => {
   const [email, setEmail] = useState(""); // Changed from mobileNumber
   const [password, setPassword] = useState("");
@@ -17,7 +20,7 @@ const Register = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    axios.post("http://localhost:3001/register", {
+    axios.post(`${API_URL}/register`, {
       email: email, // Changed from mobile_number
       password,
       name,
