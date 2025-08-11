@@ -15,12 +15,28 @@ import nodemailer from 'nodemailer';
 import client from 'prom-client';
 import compression from 'compression';
 
+// 1. CONFIGURATION
 dotenv.config();
-
-
 const MONGO_URI = process.env.MONGO_URI;
-const JWT_SECRET = process.env.JWT_SECRET; 
+const JWT_SECRET = process.env.JWT_SECRET;
+const app = express();
+const PORT = process.env.PORT || 3001;
 
+const allowedOrigins = [
+    'http://localhost:5173',
+    'https://health-hackathon-frontend-1005382078632.asia-south1.run.app'
+];
+app.use(cors({
+    origin: function (origin, callback) {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    }
+}));
+app.use(express.json()); // Crucial for reading request bodies
+app.use(compression());
 
 // Create a transporter object using Gmail
 const transporter = nodemailer.createTransport({
@@ -32,41 +48,8 @@ const transporter = nodemailer.createTransport({
 });
 
 
-
-const app = express();
-const PORT = process.env.PORT || 3001;
-
-// --- MIDDLEWARE ---
-const allowedOrigins = [
-    'http://localhost:5173',
-    'https://health-hackathon-frontend-1005382078632.asia-south1.run.app'
-];
-
-app.use(cors({
-    origin: function (origin, callback) {
-        if (!origin || allowedOrigins.includes(origin)) {
-            callback(null, true);
-        } else {
-            callback(new Error('Not allowed by CORS'));
-        }
-    }
-}));
-
-app.use(express.json());
-app.use(compression()); 
-
 const collectDefaultMetrics = client.collectDefaultMetrics;
 collectDefaultMetrics();
-
-// 3. Create the /metrics endpoint
-app.get('/metrics', async (req, res) => {
-  try {
-    res.set('Content-Type', client.register.contentType);
-    res.end(await client.register.metrics());
-  } catch (err) {
-    res.status(500).end(err);
-  }
-});
 
 
 const fileFilter = (req, file, cb) => {
@@ -141,6 +124,336 @@ const authenticateToken = (req, res, next) => {
   });
 };
 
+// --- User Authentication ---
+// Add this BEFORE your existing /register route
+app.post("/register", async (req, res) => {
+  console.log("\n=== REGISTRATION REQUEST RECEIVED ===");
+  console.log("Timestamp:", new Date().toISOString());
+  console.log("Headers:", req.headers);
+  console.log("Body:", req.body);
+  console.log("Body type:", typeof req.body);
+  console.log("Body empty?", !req.body || Object.keys(req.body).length === 0);
+  
+  try {
+    // Step 1: Check request body
+    if (!req.body || Object.keys(req.body).length === 0) {
+      console.log("❌ Request body is empty");
+      return res.status(400).json({ 
+        message: "Request body is missing or empty.",
+        debug: "No data received"
+      });
+    }
+
+    // Step 2: Log received data
+    const { name, age, sex, height, weight, email, password, mobile_number, medical_history } = req.body;
+    console.log("Extracted fields:", { 
+      name, age, sex, height, weight, email, 
+      password: password ? "[PROVIDED]" : "[MISSING]",
+      mobile_number, medical_history 
+    });
+
+    // Step 3: Validate required fields
+    const requiredFields = { name, age, sex, height, weight, email, password };
+    const missingFields = [];
+    
+    for (const [key, value] of Object.entries(requiredFields)) {
+      if (!value && value !== 0) { // 0 is valid for age, height, weight
+        missingFields.push(key);
+      }
+    }
+
+    if (missingFields.length > 0) {
+      console.log("❌ Missing required fields:", missingFields);
+      return res.status(400).json({ 
+        message: `Missing required fields: ${missingFields.join(', ')}`,
+        debug: { requiredFields: Object.keys(requiredFields), received: Object.keys(req.body) }
+      });
+    }
+
+    // Step 4: Check MongoDB connection
+    if (mongoose.connection.readyState !== 1) {
+      console.log("❌ MongoDB not connected. State:", mongoose.connection.readyState);
+      return res.status(500).json({ 
+        message: "Database connection error",
+        debug: "MongoDB not connected"
+      });
+    }
+    console.log("✅ MongoDB connected");
+
+    // Step 5: Check for existing user
+    console.log("Checking for existing user...");
+    const query = mobile_number ? { $or: [{ email }, { mobile_number }] } : { email };
+    const existingUser = await PatientModel.findOne(query);
+
+    if (existingUser) {
+      const errorMessage = existingUser.email === email 
+        ? "User with this email already exists." 
+        : "User with this mobile number already exists.";
+      console.log("❌ User already exists:", errorMessage);
+      return res.status(400).json({ message: errorMessage });
+    }
+    console.log("✅ No existing user found");
+
+    // Step 6: Create user object
+    console.log("Creating user object...");
+    const userData = {
+      name: String(name),
+      age: Number(age),
+      sex: String(sex),
+      height: Number(height),
+      weight: Number(weight),
+      email: String(email).toLowerCase(),
+      password: String(password),
+      medical_history: medical_history || []
+    };
+
+    if (mobile_number) {
+      userData.mobile_number = String(mobile_number);
+    }
+
+    console.log("User data prepared:", {
+      ...userData,
+      password: "[HIDDEN]"
+    });
+
+    // Step 7: Create and save user
+    console.log("Creating PatientModel instance...");
+    const newUser = new PatientModel(userData);
+    
+    console.log("Saving user to database...");
+    await newUser.save();
+    
+    console.log("✅ User saved successfully");
+
+    // Step 8: Prepare response
+    const userResponse = newUser.toObject();
+    delete userResponse.password;
+    delete userResponse.passwordResetOTP;
+    delete userResponse.passwordResetExpires;
+
+    console.log("✅ Registration completed successfully");
+    res.status(201).json({ 
+      message: "Registration successful", 
+      user: userResponse 
+    });
+
+  } catch (err) {
+    console.log("\n❌ REGISTRATION ERROR OCCURRED:");
+    console.log("Error name:", err.name);
+    console.log("Error message:", err.message);
+    console.log("Error code:", err.code);
+    console.log("Full error:", err);
+    
+    if (err.stack) {
+      console.log("Stack trace:", err.stack);
+    }
+
+    // Handle specific error types
+    if (err.name === 'ValidationError') {
+      console.log("Validation errors:", err.errors);
+      const messages = Object.values(err.errors).map(val => val.message);
+      return res.status(400).json({ 
+        message: messages.join(' '),
+        debug: "Mongoose validation error",
+        errors: err.errors
+      });
+    }
+
+    if (err.code === 11000) {
+      console.log("Duplicate key error:", err.keyValue);
+      const field = Object.keys(err.keyValue)[0];
+      return res.status(400).json({ 
+        message: `An account with this ${field} already exists.`,
+        debug: "Duplicate key error"
+      });
+    }
+
+    // Generic error response
+    return res.status(500).json({ 
+      message: "An internal server error occurred.",
+      debug: err.message,
+      error: process.env.NODE_ENV === 'development' ? err.stack : undefined
+    });
+  }
+});
+
+
+// ✅ User Login
+app.post("/login", async (req, res) => {
+  try {
+    const { email, password }  = req.body;
+    const user = await PatientModel.findOne({ email });
+
+    if (!user) return res.status(401).json({ message: "User not found" });
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) return res.status(401).json({ message: "Incorrect password" });
+
+    // Create JWT token
+    const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: "1h" });
+    res.status(200).json({ message: "Login successful", token, user });
+  } catch (err) {
+    console.error("Login error:", err);
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+});
+
+app.get("/health", (req, res) => {
+  res.json({
+    status: "Server is running",
+    timestamp: new Date().toISOString(),
+    port: PORT || 3001,
+    mongodb: {
+      state: mongoose.connection.readyState,
+      states: {
+        0: "disconnected",
+        1: "connected", 
+        2: "connecting",
+        3: "disconnecting"
+      }
+    },
+    environment: {
+      NODE_ENV: process.env.NODE_ENV,
+      MONGO_URI: process.env.MONGO_URI ? "SET" : "NOT SET",
+      JWT_SECRET: process.env.JWT_SECRET ? "SET" : "NOT SET"
+    }
+  });
+});
+
+// Add this endpoint temporarily
+app.get("/fix-mobile-index", async (req, res) => {
+  try {
+    console.log("Fixing mobile_number index...");
+    
+    // Drop the existing index
+    await PatientModel.collection.dropIndex("mobile_number_1");
+    console.log("✅ Dropped mobile_number_1 index");
+    
+    // Create a new sparse unique index
+    await PatientModel.collection.createIndex(
+      { mobile_number: 1 }, 
+      { unique: true, sparse: true }
+    );
+    console.log("✅ Created new sparse unique index on mobile_number");
+    
+    res.json({ 
+      message: "Mobile number index fixed successfully"
+    });
+  } catch (error) {
+    console.error("Error fixing index:", error);
+    res.status(500).json({ 
+      message: "Error fixing index", 
+      error: error.message 
+    });
+  }
+});
+
+// Add these endpoints for debugging
+app.get("/check-indexes", async (req, res) => {
+  try {
+    const indexes = await PatientModel.collection.getIndexes();
+    console.log("Current indexes:", indexes);
+    res.json({ 
+      message: "Current indexes for patients collection",
+      indexes: indexes
+    });
+  } catch (error) {
+    console.error("Error checking indexes:", error);
+    res.status(500).json({ 
+      message: "Error checking indexes", 
+      error: error.message 
+    });
+  }
+});
+
+app.get("/fix-database-index", async (req, res) => {
+  try {
+    console.log("Attempting to fix the mobile_number index...");
+    
+    // Drop the potentially faulty index. 
+    // Mongoose names it `mobile_number_1` by default.
+    await PatientModel.collection.dropIndex("mobile_number_1");
+    console.log("✅ Successfully dropped old index.");
+
+    // Mongoose will automatically recreate the correct (sparse) index on next startup or operation.
+    // To be sure, we can recreate it manually.
+    await PatientModel.collection.createIndex(
+        { mobile_number: 1 },
+        { unique: true, sparse: true }
+    );
+    console.log("✅ Successfully created new sparse index.");
+
+    res.status(200).send("<h1>Database index has been successfully fixed!</h1><p>You can now close this tab and try registering again. Please remove the /fix-database-index route from your index.js file afterwards.</p>");
+  } catch (error) {
+    console.error("Error fixing index:", error);
+    res.status(500).json({ 
+      message: "Could not fix index. It might have already been fixed or dropped. Please check the server logs.",
+      error: error.message
+    });
+  }
+});
+
+// Enhanced fix that handles different index names
+app.get("/fix-mobile-index-enhanced", async (req, res) => {
+  try {
+    console.log("Checking and fixing mobile_number index...");
+    
+    const indexes = await PatientModel.collection.getIndexes();
+    console.log("Current indexes:", Object.keys(indexes));
+    
+    // Find mobile_number related indexes
+    const mobileIndexes = Object.keys(indexes).filter(name => 
+      name.includes('mobile_number')
+    );
+    
+    console.log("Mobile number indexes found:", mobileIndexes);
+    
+    // Drop all mobile_number indexes
+    for (const indexName of mobileIndexes) {
+      try {
+        await PatientModel.collection.dropIndex(indexName);
+        console.log(`✅ Dropped index: ${indexName}`);
+      } catch (err) {
+        console.log(`⚠️ Could not drop index ${indexName}:`, err.message);
+      }
+    }
+    
+    // Create new sparse unique index
+    await PatientModel.collection.createIndex(
+      { mobile_number: 1 }, 
+      { unique: true, sparse: true }
+    );
+    console.log("✅ Created new sparse unique index on mobile_number");
+    
+    res.json({ 
+      message: "Mobile number index fixed successfully",
+      droppedIndexes: mobileIndexes
+    });
+  } catch (error) {
+    console.error("Error fixing index:", error);
+    res.status(500).json({ 
+      message: "Error fixing index", 
+      error: error.message 
+    });
+  }
+});
+
+// Add this endpoint for debugging (remove in production)
+app.get("/debug", (req, res) => {
+  res.json({
+    nodeEnv: process.env.NODE_ENV,
+    port: process.env.PORT || 3001,
+    mongoUri: process.env.MONGO_URI ? "SET" : "NOT SET",
+    jwtSecret: process.env.JWT_SECRET ? "SET" : "NOT SET",
+    mongooseState: mongoose.connection.readyState,
+    mongooseStates: {
+      0: "disconnected",
+      1: "connected", 
+      2: "connecting",
+      3: "disconnecting"
+    }
+  });
+});
 
 app.delete("/api/appointments/:appointmentId", authenticateToken, async (req, res) => {
 
@@ -171,51 +484,6 @@ app.delete("/api/appointments/:appointmentId", authenticateToken, async (req, re
   }
 });
 
-
-
-// ✅ Register a new user
-app.post("/register", async (req, res) => {
-  try {
-    const { email } = req.body;
-
-    // Check if user already exists
-    const existingUser = await PatientModel.findOne({ email });
-    if (existingUser) {
-      return res.status(400).json({ message: "User with this email already exists" });
-    }
-
-    // --- FIX ---
-    // Create the new user by passing the entire request body.
-    // Mongoose will automatically pick the fields that match the schema.
-    const newUser = new PatientModel(req.body);
-    await newUser.save();
-
-    res.status(201).json({ message: "Registration successful", user: newUser });
-  } catch (err) {
-    console.error("Registration error:", err);
-    res.status(500).json({ message: "Error registering patient", error: err.message });
-  }
-});
-
-// ✅ User Login
-app.post("/login", async (req, res) => {
-  try {
-    const { email, password }  = req.body;
-    const user = await PatientModel.findOne({ email });
-
-    if (!user) return res.status(401).json({ message: "User not found" });
-
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.status(401).json({ message: "Incorrect password" });
-
-    // Create JWT token
-    const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: "1h" });
-    res.status(200).json({ message: "Login successful", token, user });
-  } catch (err) {
-    console.error("Login error:", err);
-    res.status(500).json({ message: "Server error", error: err.message });
-  }
-});
 
 app.get("/api/appointments", authenticateToken, async (req, res) => {
   try {
@@ -350,10 +618,7 @@ app.get("/doctors", async (req, res) => {
   }
 });
 
-// ✅ Start the server
-app.listen(PORT,"0.0.0.0", () => {
-  console.log(`🚀 Server is running on port ${PORT}`);
-});
+
 
 app.put("/api/updateProfile", authenticateToken, async (req, res) => {
   try {
@@ -537,4 +802,19 @@ app.post("/reset-password", async (req, res) => {
     console.error("Reset Password Error:", error);
     res.status(500).json({ message: "Error resetting password." });
   }
+});
+
+// --- Metrics ---
+app.get('/metrics', async (req, res) => {
+  try {
+    res.set('Content-Type', client.register.contentType);
+    res.end(await client.register.metrics());
+  } catch (err) {
+    res.status(500).end(err);
+  }
+});
+
+// ✅ Start the server
+app.listen(PORT,"0.0.0.0", () => {
+  console.log(`🚀 Server is running on port ${PORT}`);
 });

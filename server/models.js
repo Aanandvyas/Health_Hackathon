@@ -50,17 +50,30 @@ const PatientSchema = new mongoose.Schema({
     time: String
   }],
   
-  photo: {type: String}
+  photo: {type: String},
 }, { timestamps: true });
 
 
-/* 🔹 Hash password before saving */
 PatientSchema.pre("save", async function (next) {
-  if (this.isModified("password")) {
+  if (!this.isModified("password")) {
+    return next();
+  }
+  
+  try {
+    // Ensure password exists and is a string
+    if (!this.password || typeof this.password !== 'string') {
+      throw new Error('Password is required and must be a string.');
+    }
+    
+    console.log("Hashing password..."); // Debug log
     const salt = await bcrypt.genSalt(10);
     this.password = await bcrypt.hash(this.password, salt);
+    console.log("Password hashed successfully"); // Debug log
+    next();
+  } catch (error) {
+    console.error("Password hashing error:", error);
+    next(error);
   }
-  next();
 });
 
 const PatientModel = mongoose.model("patients", PatientSchema);
