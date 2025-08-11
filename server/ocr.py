@@ -9,6 +9,7 @@ from dotenv import load_dotenv
 import google.generativeai as genai
 from PIL import Image
 
+
 # --- SETUP ---
 load_dotenv()
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
@@ -100,3 +101,7 @@ async def send_message(
     except Exception as e:
         print(f"!!! An unexpected error occurred: {str(e)}")
         raise HTTPException(status_code=500, detail=f"An error occurred while processing your message: {str(e)}")
+
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 5000))
+    uvicorn.run(app, host="0.0.0.0", port=port)
