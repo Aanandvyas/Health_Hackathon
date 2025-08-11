@@ -37,7 +37,21 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 
 // --- MIDDLEWARE ---
-app.use(cors());
+const allowedOrigins = [
+    'http://localhost:5173',
+    'https://health-hackathon-frontend-1005382078632.asia-south1.run.app'
+];
+
+app.use(cors({
+    origin: function (origin, callback) {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    }
+}));
+
 app.use(express.json());
 app.use(compression()); 
 
@@ -162,16 +176,18 @@ app.delete("/api/appointments/:appointmentId", authenticateToken, async (req, re
 // ✅ Register a new user
 app.post("/register", async (req, res) => {
   try {
-    const { email, password, ...rest } = req.body;
+    const { email } = req.body;
 
     // Check if user already exists
     const existingUser = await PatientModel.findOne({ email });
     if (existingUser) {
-      return res.status(400).json({ message: "User already exists" });
+      return res.status(400).json({ message: "User with this email already exists" });
     }
 
-    // Create new user (password hashing is handled in the model)
-    const newUser = new PatientModel({email, password, ...rest });
+    // --- FIX ---
+    // Create the new user by passing the entire request body.
+    // Mongoose will automatically pick the fields that match the schema.
+    const newUser = new PatientModel(req.body);
     await newUser.save();
 
     res.status(201).json({ message: "Registration successful", user: newUser });
