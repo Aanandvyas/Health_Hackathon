@@ -18,88 +18,49 @@ const Register = () => {
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
+    e.preventDefault();
   
-  console.log("=== REGISTRATION DEBUG START ===");
-  console.log("API_URL:", API_URL);
-  console.log("Environment check:", {
-    VITE_API_URL: import.meta.env.VITE_API_URL,
-    NODE_ENV: import.meta.env.NODE_ENV,
-    DEV: import.meta.env.DEV
-  });
-
-  // FIX: Add explicit validation for the 'sex' field.
-  if (!sex) {
-    setError("Please select a value for Sex.");
-    return;
-  }
-
-  const numericAge = parseInt(age, 10);
-  const numericHeight = parseInt(height, 10);
-  const numericWeight = parseInt(weight, 10);
-
-  if (isNaN(numericAge) || isNaN(numericHeight) || isNaN(numericWeight)) {
-    setError("Age, height, and weight must be valid numbers.");
-    return;
-  }
-
-  const registrationData = {
-    email: email,
-    password,
-    name,
-    age: numericAge,
-    sex,
-    medical_history: medicalHistory ? medicalHistory.split(',').map(item => item.trim()) : [],
-    height: numericHeight,
-    weight: numericWeight,
-  };
-
-  console.log("Registration data:", registrationData);
-  console.log("Making request to:", `${API_URL}/register`);
-
-  try {
-    const response = await axios.post(`${API_URL}/register`, registrationData, {
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      timeout: 15000
-    });
-    
-    console.log("✅ Registration successful:", response.data);
-    
-    if (response.status === 201) {
-      navigate("/login");
+    if (!sex) {
+      setError("Please select a value for Sex.");
+      return;
     }
-    
-  } catch (error: any) {
-    console.log("❌ REGISTRATION ERROR DETAILS:");
-    console.log("Error object:", error);
-    console.log("Error name:", error.name);
-    console.log("Error message:", error.message);
-    console.log("Error code:", error.code);
-    
-    if (error.response) {
-      console.log("Response status:", error.response.status);
-      console.log("Response headers:", error.response.headers);
-      console.log("Response data:", error.response.data);
+
+    const numericAge = parseInt(age, 10);
+    const numericHeight = parseInt(height, 10);
+    const numericWeight = parseInt(weight, 10);
+
+    if (isNaN(numericAge) || isNaN(numericHeight) || isNaN(numericWeight)) {
+      setError("Age, height, and weight must be valid numbers.");
+      return;
+    }
+
+    const registrationData = {
+      email,
+      password,
+      name,
+      age: numericAge,
+      sex,
+      medical_history: medicalHistory ? medicalHistory.split(',').map(item => item.trim()) : [],
+      height: numericHeight,
+      weight: numericWeight,
+    };
+
+    try {
+      const response = await axios.post(`${API_URL}/register`, registrationData);
       
-      // Show specific server error message
-      if (error.response.data && error.response.data.message) {
-        setError(`Server Error: ${error.response.data.message}`);
-      } else if (error.response.data && error.response.data.debug) {
-        setError(`Debug Info: ${error.response.data.debug}`);
-      } else {
-        setError(`HTTP ${error.response.status}: ${error.response.statusText}`);
+      if (response.status === 201) {
+        navigate("/login");
       }
-    } else if (error.request) {
-      console.log("Request made but no response:", error.request);
-      setError("No response from server. Is the backend running on http://localhost:3001?");
-    } else {
-      console.log("Error setting up request:", error.message);
-      setError(`Request setup error: ${error.message}`);
+      
+    } catch (error: any) {
+      console.error("Registration error:", error);
+      if (error.response?.data?.message) {
+        setError(`Server Error: ${error.response.data.message}`);
+      } else {
+        setError("An unknown error occurred during registration.");
+      }
     }
-  }
-};
+  };
 
   return (
     <div className="flex justify-center items-center mt-12 min-h-screen bg-white p-6">

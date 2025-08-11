@@ -65,10 +65,8 @@ PatientSchema.pre("save", async function (next) {
       throw new Error('Password is required and must be a string.');
     }
     
-    console.log("Hashing password..."); // Debug log
     const salt = await bcrypt.genSalt(10);
     this.password = await bcrypt.hash(this.password, salt);
-    console.log("Password hashed successfully"); // Debug log
     next();
   } catch (error) {
     console.error("Password hashing error:", error);

@@ -127,153 +127,41 @@ const authenticateToken = (req, res, next) => {
 // --- User Authentication ---
 // Add this BEFORE your existing /register route
 app.post("/register", async (req, res) => {
-  console.log("\n=== REGISTRATION REQUEST RECEIVED ===");
-  console.log("Timestamp:", new Date().toISOString());
-  console.log("Headers:", req.headers);
-  console.log("Body:", req.body);
-  console.log("Body type:", typeof req.body);
-  console.log("Body empty?", !req.body || Object.keys(req.body).length === 0);
-  
   try {
-    // Step 1: Check request body
     if (!req.body || Object.keys(req.body).length === 0) {
-      console.log("❌ Request body is empty");
-      return res.status(400).json({ 
-        message: "Request body is missing or empty.",
-        debug: "No data received"
-      });
+      return res.status(400).json({ message: "Request body is missing or empty." });
     }
-
-    // Step 2: Log received data
-    const { name, age, sex, height, weight, email, password, mobile_number, medical_history } = req.body;
-    console.log("Extracted fields:", { 
-      name, age, sex, height, weight, email, 
-      password: password ? "[PROVIDED]" : "[MISSING]",
-      mobile_number, medical_history 
-    });
-
-    // Step 3: Validate required fields
-    const requiredFields = { name, age, sex, height, weight, email, password };
-    const missingFields = [];
+    const { email, mobile_number } = req.body;
     
-    for (const [key, value] of Object.entries(requiredFields)) {
-      if (!value && value !== 0) { // 0 is valid for age, height, weight
-        missingFields.push(key);
-      }
+    const queryParts = [{ email }];
+    if (mobile_number) {
+      queryParts.push({ mobile_number });
     }
-
-    if (missingFields.length > 0) {
-      console.log("❌ Missing required fields:", missingFields);
-      return res.status(400).json({ 
-        message: `Missing required fields: ${missingFields.join(', ')}`,
-        debug: { requiredFields: Object.keys(requiredFields), received: Object.keys(req.body) }
-      });
-    }
-
-    // Step 4: Check MongoDB connection
-    if (mongoose.connection.readyState !== 1) {
-      console.log("❌ MongoDB not connected. State:", mongoose.connection.readyState);
-      return res.status(500).json({ 
-        message: "Database connection error",
-        debug: "MongoDB not connected"
-      });
-    }
-    console.log("✅ MongoDB connected");
-
-    // Step 5: Check for existing user
-    console.log("Checking for existing user...");
-    const query = mobile_number ? { $or: [{ email }, { mobile_number }] } : { email };
-    const existingUser = await PatientModel.findOne(query);
+    const existingUser = await PatientModel.findOne({ $or: queryParts });
 
     if (existingUser) {
-      const errorMessage = existingUser.email === email 
-        ? "User with this email already exists." 
-        : "User with this mobile number already exists.";
-      console.log("❌ User already exists:", errorMessage);
+      const errorMessage = existingUser.email === email ? "User with this email already exists." : "User with this mobile number already exists.";
       return res.status(400).json({ message: errorMessage });
     }
-    console.log("✅ No existing user found");
 
-    // Step 6: Create user object
-    console.log("Creating user object...");
-    const userData = {
-      name: String(name),
-      age: Number(age),
-      sex: String(sex),
-      height: Number(height),
-      weight: Number(weight),
-      email: String(email).toLowerCase(),
-      password: String(password),
-      medical_history: medical_history || []
-    };
-
-    if (mobile_number) {
-      userData.mobile_number = String(mobile_number);
-    }
-
-    console.log("User data prepared:", {
-      ...userData,
-      password: "[HIDDEN]"
-    });
-
-    // Step 7: Create and save user
-    console.log("Creating PatientModel instance...");
-    const newUser = new PatientModel(userData);
-    
-    console.log("Saving user to database...");
+    const newUser = new PatientModel(req.body);
     await newUser.save();
     
-    console.log("✅ User saved successfully");
-
-    // Step 8: Prepare response
     const userResponse = newUser.toObject();
     delete userResponse.password;
-    delete userResponse.passwordResetOTP;
-    delete userResponse.passwordResetExpires;
 
-    console.log("✅ Registration completed successfully");
-    res.status(201).json({ 
-      message: "Registration successful", 
-      user: userResponse 
-    });
-
+    res.status(201).json({ message: "Registration successful", user: userResponse });
   } catch (err) {
-    console.log("\n❌ REGISTRATION ERROR OCCURRED:");
-    console.log("Error name:", err.name);
-    console.log("Error message:", err.message);
-    console.log("Error code:", err.code);
-    console.log("Full error:", err);
-    
-    if (err.stack) {
-      console.log("Stack trace:", err.stack);
-    }
-
-    // Handle specific error types
+    console.error("REGISTRATION ERROR:", err);
     if (err.name === 'ValidationError') {
-      console.log("Validation errors:", err.errors);
       const messages = Object.values(err.errors).map(val => val.message);
-      return res.status(400).json({ 
-        message: messages.join(' '),
-        debug: "Mongoose validation error",
-        errors: err.errors
-      });
+      return res.status(400).json({ message: messages.join(' ') });
     }
-
     if (err.code === 11000) {
-      console.log("Duplicate key error:", err.keyValue);
       const field = Object.keys(err.keyValue)[0];
-      return res.status(400).json({ 
-        message: `An account with this ${field} already exists.`,
-        debug: "Duplicate key error"
-      });
+      return res.status(400).json({ message: `An account with this ${field} already exists.` });
     }
-
-    // Generic error response
-    return res.status(500).json({ 
-      message: "An internal server error occurred.",
-      debug: err.message,
-      error: process.env.NODE_ENV === 'development' ? err.stack : undefined
-    });
+    return res.status(500).json({ message: "An internal server error occurred." });
   }
 });
 
@@ -320,140 +208,7 @@ app.get("/health", (req, res) => {
   });
 });
 
-// Add this endpoint temporarily
-app.get("/fix-mobile-index", async (req, res) => {
-  try {
-    console.log("Fixing mobile_number index...");
-    
-    // Drop the existing index
-    await PatientModel.collection.dropIndex("mobile_number_1");
-    console.log("✅ Dropped mobile_number_1 index");
-    
-    // Create a new sparse unique index
-    await PatientModel.collection.createIndex(
-      { mobile_number: 1 }, 
-      { unique: true, sparse: true }
-    );
-    console.log("✅ Created new sparse unique index on mobile_number");
-    
-    res.json({ 
-      message: "Mobile number index fixed successfully"
-    });
-  } catch (error) {
-    console.error("Error fixing index:", error);
-    res.status(500).json({ 
-      message: "Error fixing index", 
-      error: error.message 
-    });
-  }
-});
 
-// Add these endpoints for debugging
-app.get("/check-indexes", async (req, res) => {
-  try {
-    const indexes = await PatientModel.collection.getIndexes();
-    console.log("Current indexes:", indexes);
-    res.json({ 
-      message: "Current indexes for patients collection",
-      indexes: indexes
-    });
-  } catch (error) {
-    console.error("Error checking indexes:", error);
-    res.status(500).json({ 
-      message: "Error checking indexes", 
-      error: error.message 
-    });
-  }
-});
-
-app.get("/fix-database-index", async (req, res) => {
-  try {
-    console.log("Attempting to fix the mobile_number index...");
-    
-    // Drop the potentially faulty index. 
-    // Mongoose names it `mobile_number_1` by default.
-    await PatientModel.collection.dropIndex("mobile_number_1");
-    console.log("✅ Successfully dropped old index.");
-
-    // Mongoose will automatically recreate the correct (sparse) index on next startup or operation.
-    // To be sure, we can recreate it manually.
-    await PatientModel.collection.createIndex(
-        { mobile_number: 1 },
-        { unique: true, sparse: true }
-    );
-    console.log("✅ Successfully created new sparse index.");
-
-    res.status(200).send("<h1>Database index has been successfully fixed!</h1><p>You can now close this tab and try registering again. Please remove the /fix-database-index route from your index.js file afterwards.</p>");
-  } catch (error) {
-    console.error("Error fixing index:", error);
-    res.status(500).json({ 
-      message: "Could not fix index. It might have already been fixed or dropped. Please check the server logs.",
-      error: error.message
-    });
-  }
-});
-
-// Enhanced fix that handles different index names
-app.get("/fix-mobile-index-enhanced", async (req, res) => {
-  try {
-    console.log("Checking and fixing mobile_number index...");
-    
-    const indexes = await PatientModel.collection.getIndexes();
-    console.log("Current indexes:", Object.keys(indexes));
-    
-    // Find mobile_number related indexes
-    const mobileIndexes = Object.keys(indexes).filter(name => 
-      name.includes('mobile_number')
-    );
-    
-    console.log("Mobile number indexes found:", mobileIndexes);
-    
-    // Drop all mobile_number indexes
-    for (const indexName of mobileIndexes) {
-      try {
-        await PatientModel.collection.dropIndex(indexName);
-        console.log(`✅ Dropped index: ${indexName}`);
-      } catch (err) {
-        console.log(`⚠️ Could not drop index ${indexName}:`, err.message);
-      }
-    }
-    
-    // Create new sparse unique index
-    await PatientModel.collection.createIndex(
-      { mobile_number: 1 }, 
-      { unique: true, sparse: true }
-    );
-    console.log("✅ Created new sparse unique index on mobile_number");
-    
-    res.json({ 
-      message: "Mobile number index fixed successfully",
-      droppedIndexes: mobileIndexes
-    });
-  } catch (error) {
-    console.error("Error fixing index:", error);
-    res.status(500).json({ 
-      message: "Error fixing index", 
-      error: error.message 
-    });
-  }
-});
-
-// Add this endpoint for debugging (remove in production)
-app.get("/debug", (req, res) => {
-  res.json({
-    nodeEnv: process.env.NODE_ENV,
-    port: process.env.PORT || 3001,
-    mongoUri: process.env.MONGO_URI ? "SET" : "NOT SET",
-    jwtSecret: process.env.JWT_SECRET ? "SET" : "NOT SET",
-    mongooseState: mongoose.connection.readyState,
-    mongooseStates: {
-      0: "disconnected",
-      1: "connected", 
-      2: "connecting",
-      3: "disconnecting"
-    }
-  });
-});
 
 app.delete("/api/appointments/:appointmentId", authenticateToken, async (req, res) => {
 
@@ -777,7 +532,7 @@ app.post("/reset-password", async (req, res) => {
     const patient = await PatientModel.findOne({ email });
 
     if (!patient) {
-      console.log("DEBUG: No patient found with that email.");
+      
       return res.status(400).json({ message: "Invalid OTP or OTP has expired." });
     }
 
@@ -787,7 +542,6 @@ app.post("/reset-password", async (req, res) => {
     const isOtpExpired = patient.passwordResetExpires < Date.now();
 
     if (!isOtpValid || isOtpExpired) {
-      console.log("DEBUG: OTP check failed.");
       return res.status(400).json({ message: "Invalid OTP or OTP has expired." });
     }
 
