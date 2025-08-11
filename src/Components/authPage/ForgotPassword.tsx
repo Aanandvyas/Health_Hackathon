@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3001";
-
 
 const ForgotPassword = () => {
   // State to manage which step of the process the user is on
   const [step, setStep] = useState<'request' | 'verify'>('request');
   
-  // --- CHANGED: State now uses email instead of mobileNumber ---
+  // State now uses email instead of mobileNumber
   const [email, setEmail] = useState('');
   const [otp, setOtp] = useState('');
   const [newPassword, setNewPassword] = useState('');
@@ -18,7 +18,7 @@ const ForgotPassword = () => {
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
 
-  // --- Step 1: Handle the initial request to send an OTP ---
+  // Step 1: Handle the initial request to send an OTP
   const handleRequestOtp = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -26,7 +26,7 @@ const ForgotPassword = () => {
     setSuccessMessage('');
 
     try {
-      // --- CHANGED: Send email to the backend ---
+      // Send email to the backend
       const response = await axios.post(`${API_URL}/forgot-password`, {
         email: email,
       });
@@ -41,7 +41,7 @@ const ForgotPassword = () => {
     }
   };
 
-  // --- Step 2: Handle the final submission to reset the password ---
+  // Step 2: Handle the final submission to reset the password
   const handleResetPassword = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -49,7 +49,7 @@ const ForgotPassword = () => {
     setSuccessMessage('');
 
     try {
-      // --- CHANGED: Send email to the backend ---
+      // Send email to the backend
       const response = await axios.post(`${API_URL}/reset-password`, {
         email: email,
         otp: otp,
@@ -105,7 +105,7 @@ const ForgotPassword = () => {
 
         {/* --- UI for Step 2: Verifying OTP and Resetting Password --- */}
         {step === 'verify' && (
-           <div>
+            <div>
             <h2 className="text-2xl font-bold text-center">Reset Password</h2>
             <p className="text-center text-gray-600 mt-2">An OTP has been sent to {email}.</p>
             <form onSubmit={handleResetPassword} className="mt-8 space-y-6">
@@ -122,7 +122,7 @@ const ForgotPassword = () => {
                   placeholder="Enter 6-digit OTP"
                 />
               </div>
-               <div>
+                <div>
                 <label htmlFor="newPassword" className="sr-only">New Password</label>
                 <input
                   id="newPassword"
@@ -149,6 +149,11 @@ const ForgotPassword = () => {
         {/* --- Display Messages for User Feedback --- */}
         {error && <p className="mt-4 text-center text-red-500">{error}</p>}
         {successMessage && <p className="mt-4 text-center text-green-500">{successMessage}</p>}
+        <div className="text-center mt-4">
+            <Link to="/login" className="font-medium text-indigo-600 hover:text-indigo-500">
+                Back to Login
+            </Link>
+        </div>
       </div>
     </div>
   );

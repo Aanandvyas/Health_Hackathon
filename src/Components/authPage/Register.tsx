@@ -1,13 +1,11 @@
 import axios from "axios";
 import { useState } from "react";
-import React from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3001";
 
-
 const Register = () => {
-  const [email, setEmail] = useState(""); // Changed from mobileNumber
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [age, setAge] = useState("");
@@ -21,7 +19,7 @@ const Register = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     axios.post(`${API_URL}/register`, {
-      email: email, // Changed from mobile_number
+      email: email,
       password,
       name,
       age,
@@ -30,14 +28,10 @@ const Register = () => {
       height,
       weight,
     })
-    .then((loginRes) => {
-        if (loginRes.data.message === "Login successful" && loginRes.data.user) {
-            localStorage.setItem("user", JSON.stringify(loginRes.data.user));
-            localStorage.setItem("token", loginRes.data.token);
-            navigate("/");
-            window.location.reload();
-        } else {
-            setError("Registration successful, but auto-login failed.");
+    .then((res) => {
+        // On successful registration, redirect to the login page
+        if (res.status === 201) {
+          navigate("/login");
         }
     })
     .catch((err) => {
@@ -185,6 +179,11 @@ const Register = () => {
           >
             Create Account
           </button>
+          <div className="mt-4 text-sm">
+            <span className="text-white">
+              Already have an account? <Link to="/login" className="underline">Log in</Link>
+            </span>
+          </div>
         </form>
       </div>
     </div>

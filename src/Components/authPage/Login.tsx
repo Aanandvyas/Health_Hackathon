@@ -1,35 +1,34 @@
 import axios from "axios";
 import { useState } from "react";
-import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3001";
 
 const Login = () => {
-  const [email, setEmail] = useState(""); // Changed from mobileNumber
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  // The useNavigate hook was removed as it was causing a crash.
-  // We will use a standard browser redirect instead.
+  const navigate = useNavigate(); // Use the standard hook for navigation.
 
-  const handleSubmit = (e : React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
+    // 2. Use the API_URL variable for the request.
     axios
       .post(`${API_URL}/login`, {
-        email: email, // Changed from mobile_number
+        email: email,
         password,
       })
       .then((res) => {
-
         if (res.data.message === "Login successful" && res.data.user) {
-          // Store user data AND token
           localStorage.setItem("user", JSON.stringify(res.data.user));
           localStorage.setItem("token", res.data.token);
           
-          // --- CHANGE: Replaced navigate() with a standard redirect ---
-          // This avoids the hook-related error and achieves the same goal.
-          window.location.href = "/";
+          // Notify other components (like the NavBar) of the login.
+          window.dispatchEvent(new Event("storage"));
+
+          // Use navigate() for a seamless SPA redirect.
+          navigate("/");
         } else {
           setError(res.data.message || "Login failed. Please check your credentials.");
         }
@@ -46,14 +45,14 @@ const Login = () => {
         <h2 className="text-white text-2xl font-semibold">Health Mentá</h2>
         <form onSubmit={handleSubmit} className="mt-6">
           <div className="mb-4 text-left">
-            <label className="block text-white font-bold">Email Address</label> {/* Changed label */}
+            <label className="block text-white font-bold">Email Address</label>
             <input
-              type="email" // Changed type
+              type="email"
               id="email"
               placeholder="Enter Email Address"
               name="email"
               required
-              onChange={(e) => setEmail(e.target.value)} // Changed state setter
+              onChange={(e) => setEmail(e.target.value)}
               className="w-full mt-2 p-2 border border-white bg-white rounded-md text-black"
             />
           </div>
