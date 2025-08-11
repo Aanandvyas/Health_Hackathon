@@ -2,6 +2,7 @@ import axios from "axios";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
+// Use the environment variable for the API URL
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3001";
 
 const Register = () => {
@@ -38,7 +39,7 @@ const Register = () => {
       if (err.response) {
         setError(`Failed to register: ${err.response.data.message || err.response.statusText}`);
       } else {
-        setError("Error setting up your registration request.");
+        setError("Network Error: Could not connect to the server.");
       }
       console.error("Registration error:", err);
     });
