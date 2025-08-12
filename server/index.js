@@ -22,19 +22,7 @@ const JWT_SECRET = process.env.JWT_SECRET;
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-const allowedOrigins = [
-    'http://localhost:5173',
-    'https://health-hackathon-frontend-1005382078632.asia-south1.run.app'
-];
-app.use(cors({
-    origin: function (origin, callback) {
-        if (!origin || allowedOrigins.includes(origin)) {
-            callback(null, true);
-        } else {
-            callback(new Error('Not allowed by CORS'));
-        }
-    }
-}));
+app.use(cors());
 app.use(express.json()); // Crucial for reading request bodies
 app.use(compression());
 
